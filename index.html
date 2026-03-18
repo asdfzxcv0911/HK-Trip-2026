@@ -491,6 +491,11 @@
             flex-shrink: 0;
         }
 
+        /* 行李清單專屬提示標籤 (隨身/託運) */
+        .tag-carry { display:inline-block; background:#e6fcf5; color:#087f5b; border:1px solid #20c997; font-size:11px; padding:2px 6px; border-radius:8px; margin-left:6px; vertical-align:middle; line-height:1.2; box-shadow: 0 2px 0 #96f2d7;}
+        .tag-check { display:inline-block; background:#fff0f5; color:#d87093; border:1px solid #ffb6c1; font-size:11px; padding:2px 6px; border-radius:8px; margin-left:6px; vertical-align:middle; line-height:1.2; box-shadow: 0 2px 0 #ffb6c1;}
+        .tag-warn { display:inline-block; background:#fff4e6; color:#d97706; border:1px solid #ffa94d; font-size:11px; padding:2px 6px; border-radius:8px; margin-left:6px; vertical-align:middle; line-height:1.2; box-shadow: 0 2px 0 #ffd8a8;}
+
         /* 返回最上按鈕 */
         .back-top-btn {
             padding: 5px 12px; 
@@ -1470,20 +1475,20 @@
                     <div style="padding: 25px 15px; display: flex; justify-content: space-between; align-items: center;">
                         <div style="text-align: center; width: 33%;">
                             <div style="font-size: 36px; font-weight: 900; color: #2c6385; line-height: 1;">KHH</div>
-                            <div style="font-size: 12px; font-weight: bold; color: #666; margin-top: 4px;">高雄小港機場</div>
-                            <div style="font-size: 20px; font-weight: 900; color: var(--accent); margin-top: 8px;">09:15</div>
+                            <div style="font-size: 12px; font-weight: bold; color: #666; margin-top: 4px; line-height: 1.4;">高雄小港機場<br><span style="font-size: 11px; color: #a0aec0;">(國際航廈)</span></div>
+                            <div style="font-size: 20px; font-weight: 900; color: var(--accent); margin-top: 6px;">09:15</div>
                         </div>
                         <div style="flex: 1; text-align: center; position: relative; padding: 0 5px;">
-                            <div style="color: #a0aec0; font-size: 13px; font-weight: bold; margin-bottom: 8px;">A321</div>
+                            <div style="color: #a0aec0; font-size: 13px; font-weight: bold; margin-bottom: 12px;">A321</div>
                             <div style="border-top: 3px dashed #bce0fd; position: relative; margin: 0 5px;">
-                                <span style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 20px; background: white; padding: 0 4px;">✈️</span>
+                                <span style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%); font-size: 20px; background: white; padding: 0 4px; line-height: 1;">✈️</span>
                             </div>
-                            <div style="color: #a0aec0; font-size: 13px; font-weight: bold; margin-top: 8px;">1h 40m</div>
+                            <div style="color: #a0aec0; font-size: 13px; font-weight: bold; margin-top: 14px;">1h 40m</div>
                         </div>
                         <div style="text-align: center; width: 33%;">
                             <div style="font-size: 36px; font-weight: 900; color: #2c6385; line-height: 1;">HKG</div>
-                            <div style="font-size: 12px; font-weight: bold; color: #666; margin-top: 4px;">香港國際機場</div>
-                            <div style="font-size: 20px; font-weight: 900; color: var(--accent); margin-top: 8px;">10:55</div>
+                            <div style="font-size: 12px; font-weight: bold; color: #666; margin-top: 4px; line-height: 1.4;">香港國際機場<br><span style="font-size: 11px; color: #a0aec0;">(第一航廈)</span></div>
+                            <div style="font-size: 20px; font-weight: 900; color: var(--accent); margin-top: 6px;">10:55</div>
                         </div>
                     </div>
                     <div style="background: #f4fbff; border-top: 3px dashed #bce0fd; padding: 15px 18px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 900; color: #4a5568;">
@@ -1501,25 +1506,63 @@
                     <div style="padding: 25px 15px; display: flex; justify-content: space-between; align-items: center;">
                         <div style="text-align: center; width: 33%;">
                             <div style="font-size: 36px; font-weight: 900; color: #e85d04; line-height: 1;">HKG</div>
-                            <div style="font-size: 12px; font-weight: bold; color: #666; margin-top: 4px;">香港國際機場</div>
-                            <div style="font-size: 20px; font-weight: 900; color: var(--primary); margin-top: 8px;">19:25</div>
+                            <div style="font-size: 12px; font-weight: bold; color: #666; margin-top: 4px; line-height: 1.4;">香港國際機場<br><span style="font-size: 11px; color: #a0aec0;">(第一航廈)</span></div>
+                            <div style="font-size: 20px; font-weight: 900; color: var(--primary); margin-top: 6px;">19:25</div>
                         </div>
                         <div style="flex: 1; text-align: center; position: relative; padding: 0 5px;">
-                            <div style="color: #a0aec0; font-size: 13px; font-weight: bold; margin-bottom: 8px;">A321</div>
+                            <div style="color: #a0aec0; font-size: 13px; font-weight: bold; margin-bottom: 12px;">A321</div>
                             <div style="border-top: 3px dashed #ffd8a8; position: relative; margin: 0 5px;">
-                                <span style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 20px; background: white; padding: 0 4px;">✈️</span>
+                                <span style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%); font-size: 20px; background: white; padding: 0 4px; line-height: 1;">✈️</span>
                             </div>
-                            <div style="color: #a0aec0; font-size: 13px; font-weight: bold; margin-top: 8px;">1h 35m</div>
+                            <div style="color: #a0aec0; font-size: 13px; font-weight: bold; margin-top: 14px;">1h 35m</div>
                         </div>
                         <div style="text-align: center; width: 33%;">
                             <div style="font-size: 36px; font-weight: 900; color: #e85d04; line-height: 1;">KHH</div>
-                            <div style="font-size: 12px; font-weight: bold; color: #666; margin-top: 4px;">高雄小港機場</div>
-                            <div style="font-size: 20px; font-weight: 900; color: var(--primary); margin-top: 8px;">21:00</div>
+                            <div style="font-size: 12px; font-weight: bold; color: #666; margin-top: 4px; line-height: 1.4;">高雄小港機場<br><span style="font-size: 11px; color: #a0aec0;">(國際航廈)</span></div>
+                            <div style="font-size: 20px; font-weight: 900; color: var(--primary); margin-top: 6px;">21:00</div>
                         </div>
                     </div>
                     <div style="background: #fff4e6; border-top: 3px dashed #ffd8a8; padding: 15px 18px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 900; color: #4a5568;">
                         <span>🧳 托運行李</span>
                         <span style="color: #e85d04;">23 公斤 / 人</span>
+                    </div>
+                </div>
+
+                <!-- 行李打包小叮嚀 (全新加入) -->
+                <div class="section-card" style="border-color: #ffb6c1; box-shadow: 0 6px 0 #ffb6c1; margin-top: 25px;">
+                    <h3 style="margin-top:0; color:#d87093;">🎒 行李打包小叮嚀</h3>
+                    <p style="font-size:13px; font-weight:bold; color:#666; margin-bottom: 15px;">根據長榮航空規定整理，打包前快速檢查一下！千萬別帶錯囉 ✨</p>
+                    
+                    <div style="background:#fff0f5; padding:12px; border-radius:15px; margin-bottom:12px; border: 2px dashed #ffb6c1;">
+                        <div style="color:#d87093; font-weight:900; font-size:15px; margin-bottom:6px;">🔋 絕對要「隨身」(不可託運)</div>
+                        <ul style="color:#555; font-weight:bold; font-size:13px; padding-left:20px; margin:0; line-height:1.6;">
+                            <li><span style="color:#e85d04; font-size:14px;">行動電源、備用電池</span> (機上全程不能拿出來充電喔！)</li>
+                            <li>打火機 (每人限帶1個一般型，只能放在隨身口袋)</li>
+                            <li>護照、錢包、相機、筆電等貴重物品</li>
+                        </ul>
+                    </div>
+
+                    <div style="background:#e6fcf5; padding:12px; border-radius:15px; margin-bottom:12px; border: 2px dashed #96f2d7;">
+                        <div style="color:#087f5b; font-weight:900; font-size:15px; margin-bottom:6px;">🧳 必須要「託運」(不可隨身)</div>
+                        <ul style="color:#555; font-weight:bold; font-size:13px; padding-left:20px; margin:0; line-height:1.6;">
+                            <li><span style="color:#e85d04; font-size:14px;">剪刀、指甲剪、美工刀</span> 等任何尖銳物品</li>
+                            <li>容量超過 <span style="color:#e85d04; font-size:14px;">100ml</span> 的液體或噴霧 (如防曬乳、化妝水)</li>
+                        </ul>
+                    </div>
+
+                    <div style="background:#e6f2fa; padding:12px; border-radius:15px; margin-bottom:12px; border: 2px dashed #99d6f9;">
+                        <div style="color:#0288d1; font-weight:900; font-size:15px; margin-bottom:6px;">💧 隨身帶液體的小秘訣</div>
+                        <div style="color:#555; font-weight:bold; font-size:13px; line-height:1.6;">
+                            如果一定要帶液體上機 (例如乾洗手、兒童藥水)，每罐<span style="color:#e85d04;">不能超過 100ml</span>，而且全部都要裝進「1公升的透明夾鏈袋」裡喔！
+                        </div>
+                    </div>
+
+                    <div style="background:#fff4e6; padding:12px; border-radius:15px; margin-bottom:5px; border: 2px dashed #ffa94d;">
+                        <div style="color:#d97706; font-weight:900; font-size:15px; margin-bottom:6px;">🚫 絕對不能帶 (地雷區)</div>
+                        <ul style="color:#555; font-weight:bold; font-size:13px; padding-left:20px; margin:0; line-height:1.6;">
+                            <li><span style="color:#ff4d4f; font-size:14px;">電子菸、加熱菸</span> (台灣與香港海關都嚴格禁止，抓到會重罰！)</li>
+                            <li>含有「鉛酸電池」的小家電 (如某些電蚊拍、手電筒)</li>
+                        </ul>
                     </div>
                 </div>
 
@@ -1737,27 +1780,57 @@
                 {
                     title: "🛂 必備證件與金錢",
                     color: "#0288d1", bg: "#e6f2fa", border: "#99d6f9",
-                    items: ["護照 (效期需滿6個月)", "台胞證 / 電子港簽 (紙本)", "身分證 / 兒童健保卡", "信用卡 / Apple Pay", "港幣現鈔 (少許即可)"]
+                    items: [
+                        "護照 (效期需滿6個月) <span class='tag-carry'>👜 絕對隨身</span>", 
+                        "台胞證 / 電子港簽 (紙本) <span class='tag-carry'>👜 絕對隨身</span>", 
+                        "身分證 / 兒童健保卡", 
+                        "信用卡 / Apple Pay", 
+                        "港幣現鈔 (少許即可) <span class='tag-carry'>👜 隨身</span>"
+                    ]
                 },
                 {
                     title: "👶 兒童專屬",
                     color: "#e85d04", bg: "#fff4e6", border: "#ffa94d",
-                    items: ["輕便型兒童推車 (必備！)", "兒童薄外套 (擋冷氣)", "備用衣物 (多帶幾套)", "安撫玩具 / 零食", "兒童水壺", "濕紙巾 / 面紙 (多帶)"]
+                    items: [
+                        "輕便型兒童推車 <span class='tag-check'>🧳 託運 / 機邊託運</span>", 
+                        "兒童薄外套 (擋冷氣)", 
+                        "備用衣物 (多帶幾套)", 
+                        "安撫玩具 / 零食", 
+                        "兒童水壺 <span class='tag-warn'>💧 安檢前須倒空</span>", 
+                        "濕紙巾 / 面紙 (多帶)"
+                    ]
                 },
                 {
                     title: "🔌 電子產品",
                     color: "#7e22ce", bg: "#f3e8ff", border: "#d8b4fe",
-                    items: ["手機及充電線", "行動電源", "萬用轉接頭 (英規三腳)", "上網 SIM 卡 / eSIM"]
+                    items: [
+                        "手機及充電線", 
+                        "行動電源 <span class='tag-carry'>👜 絕對隨身 (禁託運)</span>", 
+                        "萬用轉接頭 (英規三腳)", 
+                        "上網 SIM 卡 / eSIM"
+                    ]
                 },
                 {
                     title: "💊 常備藥物",
                     color: "#087f5b", bg: "#e6fcf5", border: "#96f2d7",
-                    items: ["兒童退燒 / 感冒藥", "腸胃藥", "暈車 / 暈船藥", "OK繃 / 蚊蟲藥膏", "防蚊液"]
+                    items: [
+                        "兒童退燒藥水 / 感冒藥 <span class='tag-check'>🧳 >100ml 須託運</span>", 
+                        "腸胃藥", 
+                        "暈車 / 暈船藥", 
+                        "OK繃 / 蚊蟲藥膏", 
+                        "防蚊液 / 乾洗手 <span class='tag-check'>🧳 >100ml 須託運</span>"
+                    ]
                 },
                 {
                     title: "👗 衣物與其他",
                     color: "#d87093", bg: "#fff0f5", border: "#ffb6c1",
-                    items: ["好走的運動鞋", "輕便雨具 / 摺疊傘", "隨身小電風扇 (夏天必備)", "購物袋 (香港買袋子要錢)"]
+                    items: [
+                        "好走的運動鞋", 
+                        "輕便雨具 / 摺疊傘 <span class='tag-check'>🧳 長傘須託運</span>", 
+                        "隨身小電風扇 <span class='tag-carry'>👜 絕對隨身 (禁託運)</span>", 
+                        "指甲剪 / 食物剪刀 <span class='tag-check'>🧳 絕對託運</span>",
+                        "購物袋 (香港買袋子要錢)"
+                    ]
                 }
             ];
 
