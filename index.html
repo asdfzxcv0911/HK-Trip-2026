@@ -336,11 +336,25 @@
             -webkit-appearance: none; /* iOS Safari 去除原生樣式 */
         }
         .expense-form input:focus, .expense-form select:focus { border-color: var(--accent); }
-        .expense-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; padding-bottom: 5px;}
+        .expense-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 5px;}
         .expense-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: white; border-radius: 15px; border: 2px solid #eee; box-shadow: 0 4px 0 #eee; }
         .expense-item .del-btn { background: #ffe4e1; color: #ff4d4f; border: 2px solid #ffb6c1; border-radius: 10px; width: 32px; height: 32px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 0 #ffb6c1; transition: all 0.1s; padding: 0;}
         .expense-item .del-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #ffb6c1; }
         .expense-total { font-size: 18px; font-weight: 900; color: var(--accent); text-align: right; margin-top: 15px; padding-top: 15px; border-top: 3px dashed #eee; line-height: 1.4; }
+
+        /* 記帳歷史收納容器 */
+        .expense-history-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        .expense-history-container.show {
+            max-height: 2000px; /* 足夠大的高度 */
+            margin-top: 15px;
+            padding: 5px;
+        }
 
         /* 待辦事項樣式 */
         .todo-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
@@ -460,7 +474,7 @@
         .food-type { color: #888; display: flex; align-items: center; gap: 6px; }
         .food-note { color: #e85d04; display: flex; align-items: flex-start; gap: 6px; line-height: 1.5; }
 
-        /* 行李清單快速跳轉按鈕 */
+        /* 行理清單快速跳轉按鈕 */
         .pack-nav-container {
             display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none;
         }
@@ -475,7 +489,7 @@
             box-shadow: 0 0 0 var(--btn-color) !important; 
         }
 
-        /* 行李清單 Checkbox */
+        /* 行理清單 Checkbox */
         .pack-item {
             display: flex;
             align-items: center;
@@ -501,7 +515,7 @@
             flex-shrink: 0;
         }
 
-        /* 行李清單專屬提示標籤 (隨身/託運) */
+        /* 行理清單專屬提示標籤 (隨身/託運) */
         .tag-carry { display:inline-block; background:#e6fcf5; color:#087f5b; border:1px solid #20c997; font-size:11px; padding:2px 6px; border-radius:8px; margin-left:6px; vertical-align:middle; line-height:1.2; box-shadow: 0 2px 0 #96f2d7;}
         .tag-check { display:inline-block; background:#fff0f5; color:#d87093; border:1px solid #ffb6c1; font-size:11px; padding:2px 6px; border-radius:8px; margin-left:6px; vertical-align:middle; line-height:1.2; box-shadow: 0 2px 0 #ffb6c1;}
         .tag-warn { display:inline-block; background:#fff4e6; color:#d97706; border:1px solid #ffa94d; font-size:11px; padding:2px 6px; border-radius:8px; margin-left:6px; vertical-align:middle; line-height:1.2; box-shadow: 0 2px 0 #ffd8a8;}
@@ -768,7 +782,7 @@
             name: "黃道益活絡油 / 雙飛人",
             category: "drug",
             imgSrc: "buy_drug.jpg",
-            area: "各大藥局 / 萬寧",
+            area: "各大藥局 /萬寧",
             url: "#",
             note: "長輩最愛伴手禮！請至連鎖藥局(萬寧/屈臣氏)購買比較有保障，避免買到假貨喔！"
         },
@@ -1136,16 +1150,12 @@
         }
 
         expenses.push({ id: Date.now(), desc, amount, cat });
-        localStorage.setItem('hkTripExpenses', JSON.stringify(expenses)); // 存入手機本機端
+        localStorage.setItem('hkTripExpenses', JSON.stringify(expenses)); 
         
         document.getElementById('exp-desc').value = '';
         document.getElementById('exp-amount').value = '';
         
         renderExpenseList();
-        
-        // 新增後自動滑動到底部
-        const expList = document.getElementById('expense-list');
-        expList.scrollTo({ top: expList.scrollHeight, behavior: 'smooth' });
     }
 
     function deleteExpense(id) {
@@ -1157,6 +1167,7 @@
     function renderExpenseList() {
         const listEl = document.getElementById('expense-list');
         const totalEl = document.getElementById('expense-total');
+        const countEl = document.getElementById('expense-count-text');
         if (!listEl || !totalEl) return;
 
         let html = '';
@@ -1181,11 +1192,19 @@
         });
 
         if (expenses.length === 0) {
-            html = `<div style="text-align:center; color:#a0aec0; padding:15px; font-weight:bold; font-size:15px; border:2px dashed #eee; border-radius:15px;">目前還沒有記帳紀錄喔！趕快來新增第一筆吧 ✨</div>`;
+            html = `<div style="text-align:center; color:#a0aec0; padding:15px; font-weight:bold; font-size:15px; border:2px dashed #eee; border-radius:15px;">目前還沒有明細喔！ ✨</div>`;
         }
 
         listEl.innerHTML = html;
         totalEl.innerHTML = `總支出：HK$ ${total.toLocaleString()} <br><span style="font-size:14px; color:#888;">(約 NT$ ${Math.round(total * 4.1).toLocaleString()})</span>`;
+        if (countEl) countEl.innerText = `📜 查看歷史明細 (共 ${expenses.length} 筆) ${document.getElementById('expense-history-container').classList.contains('show') ? '▴' : '▾'}`;
+    }
+
+    function toggleExpenseHistory() {
+        const container = document.getElementById('expense-history-container');
+        const btnText = document.getElementById('expense-count-text');
+        container.classList.toggle('show');
+        if (btnText) btnText.innerText = `📜 查看歷史明細 (共 ${expenses.length} 筆) ${container.classList.contains('show') ? '▴' : '▾'}`;
     }
 
     // 資料定義 (將原本 extra 的 HTML 改為結構化，以便在獨立頁面呈現)
@@ -1237,7 +1256,8 @@
                         type: "hotel", 
                         info: "先寄放行李，15:00才能Check-in", 
                         hotelInfo: "🛏️ 房型：Plus頂級雙人房(2張小雙人床)<br>🕒 時間：15:00 Check-in / 12:00 Check-out<br>📍 位置神讚：油麻地站 A2 出口走 1 分鐘！對面就有 7-11 與 Circle K<br>🌱 環保愛地球：房間無瓶裝水與一次性牙刷，記得帶水壺到走廊飲水機裝水喔！<br>🔌 插座注意：香港是英規三腳插座，千萬別忘了帶萬用轉接頭！<br>🌃 周邊好逛：散步就能到熱鬧的廟街夜市與女人街！",
-                        voucherImg: "cityview_voucher.jpg" // 預留給 GitHub 的圖片檔名
+                        hotelImg: "cityview_room.jpg", // 預設的飯店房間外觀檔名
+                        voucherImg: "cityview_voucher.jpg"
                     },
                     { trans: "地鐵 荃灣線", icon: "🚇" },
                     { name: "麥文記麵家", type: "food", menu: "鮮蝦雲吞麵" },
@@ -1505,7 +1525,7 @@
                             <div style="color: #a0aec0; font-size: 13px; font-weight: bold; margin-top: 14px;">1h 40m</div>
                         </div>
                         <div style="text-align: center; width: 33%;">
-                            <div style="font-size: 36px; font-weight: 900; color: #2c6385; line-height: 1;">HKG</div>
+                            <div style="font-size: 36px; font-weight: #2c6385; line-height: 1;">HKG</div>
                             <div style="font-size: 12px; font-weight: bold; color: #666; margin-top: 4px; line-height: 1.4;">香港國際機場<br><span style="font-size: 11px; color: #a0aec0;">(第一航廈)</span></div>
                             <div style="font-size: 20px; font-weight: 900; color: var(--accent); margin-top: 6px;">10:55</div>
                         </div>
@@ -1591,7 +1611,7 @@
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px; font-size: 12px; color: #666; font-weight: bold; white-space: nowrap;">
                                 <span>💺 座位：<span style="color:#e85d04;">-</span></span>
-                                <span>🧳 行李：<span style="color:var(--primary);">23公斤</span></span>
+                                <span>🧳 行利：<span style="color:var(--primary);">23公斤</span></span>
                             </div>
                         </div>
                         <div style="padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dotted #ffd8a8;">
@@ -1601,7 +1621,7 @@
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px; font-size: 12px; color: #666; font-weight: bold; white-space: nowrap;">
                                 <span>💺 座位：<span style="color:#e85d04;">-</span></span>
-                                <span>🧳 行李：<span style="color:var(--primary);">23公斤</span></span>
+                                <span>🧳 行利：<span style="color:var(--primary);">23公斤</span></span>
                             </div>
                         </div>
                         <div style="padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;">
@@ -1611,7 +1631,7 @@
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px; font-size: 12px; color: #666; font-weight: bold; white-space: nowrap;">
                                 <span>💺 座位：<span style="color:#e85d04;">-</span></span>
-                                <span>🧳 行李：<span style="color:var(--primary);">23公斤</span></span>
+                                <span>🧳 行利：<span style="color:var(--primary);">23公斤</span></span>
                             </div>
                         </div>
                     </div>
@@ -1676,6 +1696,12 @@
                 
                 <div class="section-card" style="border-color: var(--primary); box-shadow: 0 6px 0 var(--primary);">
                     <h3 style="margin-top:0; color:var(--primary);">✍️ 我的記帳本</h3>
+                    
+                    <!-- 總支出面板移到上方，一目了然 -->
+                    <div id="expense-total" class="expense-total" style="margin-top: 0; margin-bottom: 20px; border-top: 0; padding-top: 0; text-align: center;">
+                        總支出：HK$ 0 <br><span style="font-size:14px; color:#888;">(約 NT$ 0)</span>
+                    </div>
+
                     <div class="expense-form">
                         <div class="row">
                             <select id="exp-cat" style="flex: 1;">
@@ -1693,11 +1719,18 @@
                         </button>
                     </div>
                     
-                    <div id="expense-list" class="expense-list">
-                        <!-- 記帳項目會動態生成在這裡 -->
-                    </div>
-                    <div id="expense-total" class="expense-total">
-                        總支出：HK$ 0 <br><span style="font-size:14px; color:#888;">(約 NT$ 0)</span>
+                    <hr style="border: 0; border-top: 2px dashed #eee; margin: 25px 0;">
+
+                    <!-- 收納歷史明細的按鈕 -->
+                    <button id="expense-history-btn" class="mini-btn" style="width: 100%; justify-content: center; padding: 12px; background: #e6f2fa; border-color: #99d6f9; color: #0288d1; box-shadow: 0 4px 0 #99d6f9;" onclick="toggleExpenseHistory()">
+                        <span id="expense-count-text">📜 查看歷史明細 (共 0 筆) ▾</span>
+                    </button>
+
+                    <!-- 明細收納容器 -->
+                    <div id="expense-history-container" class="expense-history-container">
+                        <div id="expense-list" class="expense-list">
+                            <!-- 記帳項目會由 renderExpenseList() 動態生成 -->
+                        </div>
                     </div>
                 </div>
 
@@ -1796,7 +1829,7 @@
                         </a>
                     </div>
 
-                    <!-- 雙層巴士搭乘小抄 -->
+                    <!-- 雙層巴士搭乘貼士 -->
                     <div class="section-card" style="border-color: var(--accent); box-shadow: 0 6px 0 var(--accent);">
                         <h3 style="margin-top:0; color:#e85d04;">💡 雙層巴士搭乘貼士</h3>
                         <ul style="color:#555; font-weight:bold; line-height:1.8; padding-left:20px; margin-bottom:0; font-size:14px;">
@@ -1849,7 +1882,7 @@
                         </a>
                     </div>
 
-                    <!-- 搭乘小抄 -->
+                    <!-- 搭乘貼士 -->
                     <div class="section-card" style="border-color: var(--accent); box-shadow: 0 6px 0 var(--accent);">
                         <h3 style="margin-top:0; color:#e85d04;">💡 叮叮車搭乘貼士</h3>
                         <ul style="color:#555; font-weight:bold; line-height:1.8; padding-left:20px; margin-bottom:0; font-size:14px;">
@@ -2174,7 +2207,7 @@
     function openTripDetailModal(dayIndex, stepIndex) {
         const step = tripData.days[dayIndex].itinerary[stepIndex];
         let extraInfo = step.hotelInfo || step.spotInfo || (step.type === 'food' ? step.menu : step.price) || step.info || '';
-        openDetailModal(step.name, step.type, extraInfo, step.mapUrl);
+        openDetailModal(step.name, step.type, extraInfo, step.mapUrl, step.hotelImg);
     }
 
     // 開啟憑證圖檔的專屬彈窗
@@ -2183,7 +2216,7 @@
         content += `<p style="text-align:center; font-weight:bold; color:#555; margin-bottom: 15px;">${name}</p>`;
         content += `<div style="text-align:center;">
             <div style="background:#f4fbff; padding: 10px; border-radius: 15px; border: 3px dashed var(--accent);">
-                <img src="${imgSrc}" alt="訂房憑證圖片" style="max-width:100%; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.onerror=null; this.parentNode.innerHTML='<div style=\\'padding:30px; color:#d97706; font-weight:bold;\\'>⏳ 尚未上傳<br><span style=\\'font-size:12px; color:#888;\\'>請確認檔名：${imgSrc}</span></div>';">
+                <img src="${imgSrc}" alt="訂房憑證圖片" style="max-width:100%; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.onerror=null; this.parentNode.innerHTML='<div style=\\'padding:30px; color:#d97706; font-weight:bold\\'>⏳ 尚未上傳<br><span style=\\'font-size:12px; color:#888;\\'>請確認檔名：${imgSrc}</span></div>';">
             </div>
             <p style="font-size:12px; color:#888; margin-top:10px; font-weight:bold;">出示此憑證與護照辦理入住手續</p>
         </div>`;
@@ -2203,7 +2236,7 @@
         setTimeout(() => modal.classList.add('show'), 10);
     }
 
-    function openDetailModal(name, type, extraInfo, mapUrl) {
+    function openDetailModal(name, type, extraInfo, mapUrl, hotelImg) {
         let content = `<h3 style="color:var(--primary); margin-top:0; text-align:center; font-size:26px; text-shadow: 2px 2px 0px #d0ebff; letter-spacing:1px;">${name}</h3>`;
         
         if (type === 'food') {
@@ -2251,7 +2284,23 @@
             }
             
         } else if (type === 'hotel') {
-            // 解析城景國際的專屬彩色積木卡片
+            // 將照片預覽區移到最上面
+            content = `<h3 style="color:var(--primary); margin-top:0; text-align:center; font-size:26px; text-shadow: 2px 2px 0px #d0ebff; letter-spacing:1px;">${name}</h3>`;
+            
+            // 飯店照片預覽區 (優先顯示)
+            let finalHotelImg = hotelImg || 'hotel_room.jpg';
+            content += `
+            <div style="margin-bottom: 20px;">
+                <div style="background: #f3e8ff; border:4px dashed #d8b4fe; color:#7e22ce; border-radius: 20px; height: 180px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                    <img src="${finalHotelImg}" alt="飯店照片" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div style="display:none; flex-direction: column; align-items: center; justify-content: center;">
+                        <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2.2s ease-in-out infinite;">🏨</div>
+                        <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #d8b4fe; font-size:14px; box-shadow: 0 3px 0 #d8b4fe;">⏳ 請確認檔名：${finalHotelImg}</div>
+                    </div>
+                </div>
+            </div>`;
+
+            // 解析城景國際的專屬彩色積木卡片 (放在照片下方)
             let infoBlocks = extraInfo.split('<br>').map(line => {
                 let bg = '#f4fbff', border = '#3eb8f2', color = '#0288d1'; // 預設天空藍
                 if (line.includes('🛏️') || line.includes('🕒')) { bg = '#fff4e6'; border = '#ffa94d'; color = '#d97706'; } // 橘色 (房型/時間)
@@ -2264,14 +2313,7 @@
                 </div>`;
             }).join('');
 
-            content += `
-            <div style="margin-top:15px; margin-bottom: 20px;">
-                ${infoBlocks}
-            </div>
-            <div class="img-placeholder" style="background: repeating-linear-gradient(-45deg, #f3e8ff, #f3e8ff 15px, #faf5ff 15px, #faf5ff 30px); border:4px dashed #d8b4fe; color:#7e22ce; border-radius: 20px; height: 160px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
-                <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2.2s ease-in-out infinite;">🏨</div>
-                <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #d8b4fe; font-size:14px; box-shadow: 0 3px 0 #d8b4fe;">飯店房間外觀預覽區</div>
-            </div>`;
+            content += `<div style="margin-top:5px;">${infoBlocks}</div>`;
         }
         
         document.getElementById('modal-body').innerHTML = content;
