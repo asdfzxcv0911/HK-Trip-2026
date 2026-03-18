@@ -198,41 +198,46 @@
             box-shadow: 0 0 0 #87d396;
         }
 
-        /* 用於景點/美食的次要按鈕 */
+        /* 用於景點/美食的次要按鈕 (為適應手機行程版面而縮小) */
         .action-btn.secondary {
             background: var(--blue);
             border-color: #72bde6;
-            box-shadow: 0 5px 0 #72bde6;
+            box-shadow: 0 4px 0 #72bde6;
             color: #2c6385;
+            padding: 8px 14px;
+            font-size: 14px;
+            margin-top: 6px;
+            border-radius: 16px;
         }
         .action-btn.secondary:active {
+            transform: translateY(4px);
             box-shadow: 0 0 0 #72bde6;
         }
 
-        /* 小巧可愛的迷你按鈕 (專屬住宿等提示) */
+        /* 小巧可愛的迷你按鈕 (全面縮小適應手機) */
         .mini-btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 16px;
-            margin-top: 8px;
+            gap: 4px;
+            padding: 5px 10px;
+            margin-top: 6px;
             border: 2px solid #d8b4fe;
-            border-radius: 20px;
+            border-radius: 16px;
             background: #f3e8ff;
             color: #7e22ce;
             font-weight: 800;
-            font-size: 14px;
+            font-size: 12px;
             cursor: pointer;
-            box-shadow: 0 4px 0 #d8b4fe;
+            box-shadow: 0 3px 0 #d8b4fe;
             transition: transform 0.1s, box-shadow 0.1s;
         }
         
         .mini-btn:active {
-            transform: translateY(4px);
+            transform: translateY(3px);
             box-shadow: 0 0 0 #d8b4fe;
         }
 
-        .icon-tag { font-size: 24px; line-height: 1; }
+        .icon-tag { font-size: 18px; line-height: 1; }
 
         /* 交通圖示 */
         .transport {
@@ -348,7 +353,7 @@
             width: 24px; height: 24px; accent-color: #20c997; cursor: pointer; flex-shrink: 0;
         }
         .todo-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .todo-text { font-weight: 900; color: #4a5568; font-size: 16px; word-break: break-all; }
+        .todo-text { font-weight: 900; color: #4a5568; font-size: 14px; letter-spacing: -0.5px; word-break: break-word; line-height: 1.2; }
         .todo-date { font-size: 12px; font-weight: bold; color: #e85d04; background: #fff4e6; padding: 2px 8px; border-radius: 10px; align-self: flex-start; }
         .todo-item.done .todo-date { background: #f0f0f0; color: #a0aec0; }
 
@@ -1210,7 +1215,9 @@
                     { name: "麥文記麵家", type: "food", menu: "鮮蝦雲吞麵" },
                     { name: "澳洲牛奶公司", type: "food", menu: "炒牛油蛋多士、燉奶" },
                     { trans: "散步前往海傍", icon: "🚶" },
-                    { name: "維多利亞港燈光秀", info: "20:00 幻彩詠香江" }
+                    { name: "維多利亞港燈光秀", info: "20:00 幻彩詠香江" },
+                    { trans: "搭車返回飯店", icon: "🚇" },
+                    { name: "🏨 城景國際Cityview", info: "結束第一天行程，好好休息 🌙" }
                 ]
             },
             {
@@ -1219,9 +1226,7 @@
                 itinerary: [
                     { 
                         name: "🏨 城景國際Cityview", 
-                        type: "hotel", 
-                        info: "活力滿滿，準備出發！", 
-                        hotelInfo: "🛏️ 房型：Plus頂級雙人房(2張小雙人床)<br>🕒 時間：15:00 Check-in / 12:00 Check-out<br>📍 位置神讚：油麻地站 A2 出口走 1 分鐘！對面就有 7-11 與 Circle K<br>🌱 環保愛地球：房間無瓶裝水與一次性牙刷，記得帶水壺到走廊飲水機裝水喔！<br>🔌 插座注意：香港是英規三腳插座，千萬別忘了帶萬用轉接頭！<br>🌃 周邊好逛：散步就能到熱鬧的廟街夜市與女人街！" 
+                        info: "活力滿滿，準備出發！" 
                     },
                     { trans: "搭乘地鐵出發", icon: "🚇" },
                     { 
@@ -1230,7 +1235,9 @@
                         spotInfo: "🎟️ 票價：成人 HK$498 / 小童 HK$249<br>⏰ 營業時間：10:00 - 19:30<br>🎢 必玩設施：登山纜車、海洋奇觀(水族館)、大熊貓之旅" 
                     },
                     { trans: "地鐵 南港島線", icon: "🚇" },
-                    { name: "一點心 (太子)", type: "food", menu: "蝦餃、燒賣、蘿蔔糕" }
+                    { name: "一點心 (太子)", type: "food", menu: "蝦餃、燒賣、蘿蔔糕" },
+                    { trans: "搭車返回飯店", icon: "🚇" },
+                    { name: "🏨 城景國際Cityview", info: "結束第二天行程，好好休息 🌙" }
                 ]
             },
             {
@@ -1239,14 +1246,14 @@
                 itinerary: [
                     { 
                         name: "🏨 城景國際Cityview", 
-                        type: "hotel", 
-                        info: "活力滿滿，準備出發！", 
-                        hotelInfo: "🛏️ 房型：Plus頂級雙人房(2張小雙人床)<br>🕒 時間：15:00 Check-in / 12:00 Check-out<br>📍 位置神讚：油麻地站 A2 出口走 1 分鐘！對面就有 7-11 與 Circle K<br>🌱 環保愛地球：房間無瓶裝水與一次性牙刷，記得帶水壺到走廊飲水機裝水喔！<br>🔌 插座注意：香港是英規三腳插座，千萬別忘了帶萬用轉接頭！<br>🌃 周邊好逛：散步就能到熱鬧的廟街夜市與女人街！" 
+                        info: "活力滿滿，準備出發！" 
                     },
                     { trans: "搭乘地鐵出發", icon: "🚇" },
                     { name: "香港迪士尼樂園", type: "spot", spotInfo: "🎟️ 票價：HK$639起 (依日子而定)<br>⏰ 營業時間：10:30 - 20:30<br>🏰 必玩重點：魔雪奇緣世界、夜間城堡煙火秀" },
                     { trans: "地鐵 迪士尼線", icon: "🏰" },
-                    { name: "金華冰廳", type: "food", menu: "第一名菠蘿油、凍檸茶" }
+                    { name: "金華冰廳", type: "food", menu: "第一名菠蘿油、凍檸茶" },
+                    { trans: "搭車返回飯店", icon: "🚇" },
+                    { name: "🏨 城景國際Cityview", info: "結束第三天行程，好好休息 🌙" }
                 ]
             },
             {
@@ -1255,14 +1262,14 @@
                 itinerary: [
                     { 
                         name: "🏨 城景國際Cityview", 
-                        type: "hotel", 
-                        info: "活力滿滿，準備出發！", 
-                        hotelInfo: "🛏️ 房型：Plus頂級雙人房(2張小雙人床)<br>🕒 時間：15:00 Check-in / 12:00 Check-out<br>📍 位置神讚：油麻地站 A2 出口走 1 分鐘！對面就有 7-11 與 Circle K<br>🌱 環保愛地球：房間無瓶裝水與一次性牙刷，記得帶水壺到走廊飲水機裝水喔！<br>🔌 插座注意：香港是英規三腳插座，千萬別忘了帶萬用轉接頭！<br>🌃 周邊好逛：散步就能到熱鬧的廟街夜市與女人街！" 
+                        info: "活力滿滿，準備出發！" 
                     },
                     { trans: "搭乘地鐵出發", icon: "🚇" },
                     { name: "昂坪 360 纜車", type: "spot", spotInfo: "🎟️ 票價：來回約 HK$235 (建議預約水晶車廂)<br>⏰ 營業時間：10:00 - 18:00<br>📸 必訪重點：天壇大佛、昂坪市集" },
                     { trans: "地鐵 東涌線", icon: "🚇" },
-                    { name: "甘牌燒鵝", type: "food", menu: "米其林一星燒鵝、叉燒" }
+                    { name: "甘牌燒鵝", type: "food", menu: "米其林一星燒鵝、叉燒" },
+                    { trans: "搭車返回飯店", icon: "🚇" },
+                    { name: "🏨 城景國際Cityview", info: "結束第四天行程，好好休息 🌙" }
                 ]
             },
             {
@@ -1271,9 +1278,7 @@
                 itinerary: [
                     { 
                         name: "🏨 城景國際Cityview", 
-                        type: "hotel", 
-                        info: "活力滿滿，準備出發！", 
-                        hotelInfo: "🛏️ 房型：Plus頂級雙人房(2張小雙人床)<br>🕒 時間：15:00 Check-in / 12:00 Check-out<br>📍 位置神讚：油麻地站 A2 出口走 1 分鐘！對面就有 7-11 與 Circle K<br>🌱 環保愛地球：房間無瓶裝水與一次性牙刷，記得帶水壺到走廊飲水機裝水喔！<br>🔌 插座注意：香港是英規三腳插座，千萬別忘了帶萬用轉接頭！<br>🌃 周邊好逛：散步就能到熱鬧的廟街夜市與女人街！" 
+                        info: "活力滿滿，準備出發！" 
                     },
                     { trans: "搭乘地鐵出發", icon: "🚇" },
                     { name: "中環半山扶手電梯", info: "世界最長戶外電梯" },
@@ -1281,7 +1286,9 @@
                     { name: "香港摩天輪", type: "spot", spotInfo: "🎟️ 票價：成人 HK$20 / 小童 HK$10<br>⏰ 營業時間：11:00 - 23:00<br>🎡 必訪重點：維多利亞港日落與無敵夜景" },
                     { trans: "山頂纜車", icon: "🚠" },
                     { name: "太平山頂", info: "凌霄閣百萬夜景" },
-                    { name: "蘭芳園 / 泰昌餅家", type: "food", menu: "絲襪奶茶、牛油皮蛋塔" }
+                    { name: "蘭芳園 / 泰昌餅家", type: "food", menu: "絲襪奶茶、牛油皮蛋塔" },
+                    { trans: "搭車返回飯店", icon: "🚇" },
+                    { name: "🏨 城景國際Cityview", info: "結束第五天行程，好好休息 🌙" }
                 ]
             },
             {
@@ -1290,20 +1297,21 @@
                 itinerary: [
                     { 
                         name: "🏨 城景國際Cityview", 
-                        type: "hotel", 
-                        info: "辦理退房，帶著行李出發大嶼山！ 🧳", 
-                        hotelInfo: "🛏️ 房型：Plus頂級雙人房(2張小雙人床)<br>🕒 時間：15:00 Check-in / 12:00 Check-out<br>📍 位置神讚：油麻地站 A2 出口走 1 分鐘！對面就有 7-11 與 Circle K<br>🌱 環保愛地球：房間無瓶裝水與一次性牙刷，記得帶水壺到走廊飲水機裝水喔！<br>🔌 插座注意：香港是英規三腳插座，千萬別忘了帶萬用轉接頭！<br>🌃 周邊好逛：散步就能到熱鬧的廟街夜市與女人街！" 
+                        info: "辦理退房，帶著行李出發大嶼山！ 🧳" 
                     },
                     { 
-                        trans: "<span style='font-size:12.5px; letter-spacing:-0.5px;'>地鐵 <span style='color:#e2231a; font-weight:900;'>荃灣線</span>➔<span style='color:#f38b00; font-weight:900;'>東涌線(東涌站)</span></span>", 
+                        trans: "<span style='font-size:13px; letter-spacing:-0.5px;'><span style='color:#e2231a; font-weight:900;'>荃灣線</span>➔<span style='color:#f38b00; font-weight:900;'>東涌線</span></span>", 
                         icon: "🚇", 
-                        duration: "約50分鐘",
+                        duration: "約50分",
                         externalUrl: "https://www.google.com/maps/dir/%E5%9F%8E%E6%99%AF%E5%9C%8B%E9%9A%9B+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E7%AA%A9%E6%89%93%E8%80%81%E9%81%9323%E8%99%9F/%E6%9D%B1%E8%96%88%E5%9F%8E%E5%90%8D%E5%BA%97%E5%80%89+%E9%A6%99%E6%B8%AF%E5%A4%A7%E5%B6%BC%E5%B1%B1%E9%81%94%E6%9D%B1%E8%B7%AF20%E8%99%9F/@22.3237215,113.9775268,12z/am=t/data=!4m14!4m13!1m5!1m1!1s0x340400c130565a83:0x4a91e05e1bdd9b81!2m2!1d114.171644!2d22.313683!1m5!1m1!1s0x3403e3ef3258fa0d:0xe0944b7b63ed2a6f!2m2!1d113.9412938!2d22.289733!3e3?authuser=0&entry=ttu&g_ep=EgoyMDI2MDMxMS4wIKXMDSoASAFQAw%3D%3D"
                     },
                     { 
                         name: "東薈城名店倉 Citygate", 
                         type: "spot", 
-                        spotInfo: "🎒 寄放行李：商場 B2/B3 有大型智慧置物櫃可寄放行李喔！<br>🛍️ 必逛重點：離港前最後血拼！各大品牌 Outlet 折扣<br>⏰ 營業時間：10:00 - 22:00" 
+                        info: "🧳 先到 B2 或 B3 寄放行李",
+                        lockerUrl: "https://www.citygateoutlets.com.hk/-/media/Images/SwireCitygate/SitePdfs/2024-Locker-PDF.ashx?rev=8fbe0b2dc85649ce8d93b3beeb31d00a",
+                        spotInfo: "⏰ 營業時間：10:00 - 22:00<br>🎒 寄放行李：商場 B2/B3 有大型智慧置物櫃可寄放行李喔！<br>🛍️ 必逛重點：離港前最後血拼！各大品牌 Outlet 折扣",
+                        mapUrl: "https://www.citygateoutlets.com.hk/zh-hk/floor-plan/"
                     },
                     { trans: "步行前往纜車站", icon: "🚶" },
                     { 
@@ -1604,7 +1612,7 @@
                         <h3 style="margin-top:0; color:#e85d04;">💳 八達通 (Octopus) 攻略</h3>
                         <div style="background:#fff4e6; padding:12px 15px; border-radius:12px; margin-bottom:12px; font-size:14px; color:#d97706; font-weight:bold; border: 2px dashed #ffa94d; line-height: 1.5;">
                             📱 <span style="color:#e85d04; font-size: 15px;">iPhone 族免買卡超省事：</span><br>
-                            打開手機「錢包」App ➔ 加入交通卡 ➔ 搜尋「八達通」，直接用 Apple Pay 刷卡加值，逼手機就能進站！(僅限成人卡)
+                            到 Apple Store 下載 <strong>Octopus for Tourists</strong> ➔ 按右上角【齒輪】，把語言(Language)選簡體中文 ➔ 點選最下面【加入八達通卡】，後面照步驟操作就可把八達通卡放在 iPhone 的錢包或是 Apple Watch 中。
                         </div>
                         <ul style="color:#555; font-weight:bold; line-height:1.8; padding-left:20px; margin-bottom:0; font-size:14px;">
                             <li><span style="color:var(--primary);">小童卡半價：</span> 3-11 歲兒童記得在客務中心買「小童八達通實體卡」，搭車只要半價！</li>
@@ -1917,12 +1925,12 @@
         html += `<h2 class="day-title">${day.date} ${day.title}</h2>`;
         day.itinerary.forEach((step, stepIdx) => {
             if (step.trans) {
-                let durationHtml = step.duration ? `<span style="font-size:13px; color:#888; font-weight:bold;">⏱️ ${step.duration}</span>` : '';
+                let durationHtml = step.duration ? `<span style="font-size:12px; color:#888; font-weight:bold;">⏱️ ${step.duration}</span>` : '';
                 if (step.externalUrl) {
                         html += `<div class="transport" style="flex-wrap: wrap; gap: 6px;">
                             <a href="${step.externalUrl}" target="_blank" style="text-decoration:none;">
-                                <div class="mini-btn" style="background:#e6f2fa; border-color:#99d6f9; color:#0288d1; margin-top:0; padding:6px 12px;">
-                                    <span>${step.icon}</span> ${step.trans} <span style="font-size:16px; margin-left:2px;">👆</span>
+                                <div class="mini-btn" style="background:#e6f2fa; border-color:#99d6f9; color:#0288d1; margin-top:0;">
+                                    <span>${step.icon}</span> ${step.trans} <span style="font-size:13px; margin-left:2px;">👆</span>
                                 </div>
                             </a>
                             ${durationHtml}
@@ -1930,7 +1938,7 @@
                     } else if (step.isLink) {
                         html += `<div class="transport">
                             <div class="mini-btn" style="background:#e6f2fa; border-color:#99d6f9; color:#0288d1; margin-top:0;" onclick="openTripModal(${index}, ${stepIdx})">
-                                <span>${step.icon}</span> ${step.trans} <span style="font-size:16px; margin-left:4px;">👆</span>
+                                <span>${step.icon}</span> ${step.trans} <span style="font-size:13px; margin-left:2px;">👆</span>
                             </div>
                             ${durationHtml}
                         </div>`;
@@ -1944,15 +1952,24 @@
                     if (step.type === 'hotel') {
                         // 住宿資訊專屬的迷你可愛按鈕
                         btnHtml = `<button class="mini-btn" onclick="openTripDetailModal(${index}, ${stepIdx})">
-                            🏠 住宿資訊 <span style="font-size:16px;">✨</span>
+                            🏠 住宿資訊 <span style="font-size:13px;">✨</span>
                         </button>`;
                     } else if (step.type === 'spot') {
-                        // 景點資訊專屬的迷你可愛按鈕 (清新的薄荷綠風格)
-                        btnHtml = `<button class="mini-btn" style="background:#e6fcf5; border-color:#96f2d7; color:#087f5b; box-shadow: 0 4px 0 #96f2d7;" onclick="openTripDetailModal(${index}, ${stepIdx})">
-                            🎡 景點資訊 <span style="font-size:16px;">✨</span>
+                        // 景點資訊專屬的迷你可愛按鈕
+                        btnHtml = `<button class="mini-btn" style="background:#e6fcf5; border-color:#96f2d7; color:#087f5b; box-shadow: 0 3px 0 #96f2d7;" onclick="openTripDetailModal(${index}, ${stepIdx})">
+                            🎡 景點資訊 <span style="font-size:13px;">✨</span>
                         </button>`;
+
+                        // 如果有行李寄放櫃的連結，則在旁邊動態加上專屬按鈕
+                        if (step.lockerUrl) {
+                            btnHtml += `<a href="${step.lockerUrl}" target="_blank" style="text-decoration:none; display:inline-block;">
+                                <button class="mini-btn" style="background:#f4fbff; border-color:#99d6f9; color:#0288d1; box-shadow: 0 3px 0 #99d6f9;">
+                                    🧳 行李寄放 <span style="font-size:13px;">🔗</span>
+                                </button>
+                            </a>`;
+                        }
                     } else if (step.type) {
-                        // 美食保留原本的滿版大按鈕
+                        // 美食按鈕縮小為更精緻的次要按鈕
                         let btnClass = 'action-btn secondary';
                         let detailType = '推薦必點';
                         btnHtml = `<button class="${btnClass}" onclick="openTripDetailModal(${index}, ${stepIdx})">
@@ -1962,21 +1979,21 @@
                     // 檢查是否有訂房憑證的圖檔設定
                     let voucherBtn = '';
                     if (step.voucherImg) {
-                        voucherBtn = `<button class="mini-btn" style="background:#fff4e6; border-color:#ffa94d; color:#d97706; box-shadow: 0 4px 0 #ffa94d;" onclick="openVoucherModal('${step.name}', '${step.voucherImg}')">
-                            🧾 訂房憑證 <span style="font-size:16px;">✨</span>
+                        voucherBtn = `<button class="mini-btn" style="background:#fff4e6; border-color:#ffa94d; color:#d97706; box-shadow: 0 3px 0 #ffa94d;" onclick="openVoucherModal('${step.name}', '${step.voucherImg}')">
+                            🧾 訂房憑證 <span style="font-size:13px;">✨</span>
                         </button>`;
                     }
                     
                     // 組合所有按鈕
                     let actionButtons = '';
                     if (btnHtml || voucherBtn) {
-                        actionButtons = `<div style="display:flex; flex-wrap:wrap; gap:8px;">${btnHtml}${voucherBtn}</div>`;
+                        actionButtons = `<div style="display:flex; flex-wrap:wrap; gap:6px;">${btnHtml}${voucherBtn}</div>`;
                     }
                     
                     html += `
                         <div class="section-card">
                             <div style="font-size:18px; color:#444; font-weight:bold;">${step.time ? `<span style="color:var(--primary);">${step.time}</span> ` : ''}${step.name}</div>
-                            ${cardSubtitle ? `<p style="font-size:15px; color:#888; margin:8px 0; font-weight:bold;">${cardSubtitle}</p>` : ''}
+                            ${cardSubtitle ? `<p style="font-size:12px; color:#888; margin:6px 0 4px; font-weight:bold; opacity:0.9;">${cardSubtitle}</p>` : ''}
                             ${actionButtons}
                         </div>
                     `;
@@ -1995,7 +2012,7 @@
     function openTripDetailModal(dayIndex, stepIndex) {
         const step = tripData.days[dayIndex].itinerary[stepIndex];
         let extraInfo = step.hotelInfo || step.spotInfo || (step.type === 'food' ? step.menu : step.price) || step.info || '';
-        openDetailModal(step.name, step.type, extraInfo);
+        openDetailModal(step.name, step.type, extraInfo, step.mapUrl);
     }
 
     // 開啟憑證圖檔的專屬彈窗
@@ -2024,7 +2041,7 @@
         setTimeout(() => modal.classList.add('show'), 10);
     }
 
-    function openDetailModal(name, type, extraInfo) {
+    function openDetailModal(name, type, extraInfo, mapUrl) {
         let content = `<h3 style="color:var(--primary); margin-top:0; text-align:center; font-size:26px; text-shadow: 2px 2px 0px #d0ebff; letter-spacing:1px;">${name}</h3>`;
         
         if (type === 'food') {
@@ -2054,11 +2071,22 @@
             content += `
             <div style="margin-top:15px; margin-bottom: 20px;">
                 ${infoBlocks}
-            </div>
-            <div class="img-placeholder" style="background: repeating-linear-gradient(-45deg, #e6fcf5, #e6fcf5 15px, #f1fdf9 15px, #f1fdf9 30px); border:4px dashed #20c997; color:#087f5b; border-radius: 20px; height: 160px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
-                <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2s ease-in-out infinite;">🎈</div>
-                <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #20c997; font-size:14px; box-shadow: 0 3px 0 #20c997;">點我看園區地圖</div>
             </div>`;
+            
+            if (mapUrl) {
+                content += `
+                <a href="${mapUrl}" target="_blank" style="text-decoration:none; display:block;">
+                    <button class="action-btn" style="margin-top:0; justify-content:center; background:#e6fcf5; border-color:#20c997; color:#087f5b; box-shadow: 0 5px 0 #20c997; width: 100%;">
+                        <span style="font-size: 16px;">🗺️ 商場地圖</span>
+                    </button>
+                </a>`;
+            } else {
+                content += `
+                <div class="img-placeholder" style="background: repeating-linear-gradient(-45deg, #e6fcf5, #e6fcf5 15px, #f1fdf9 15px, #f1fdf9 30px); border:4px dashed #20c997; color:#087f5b; border-radius: 20px; height: 160px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
+                    <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2s ease-in-out infinite;">🎈</div>
+                    <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #20c997; font-size:14px; box-shadow: 0 3px 0 #20c997;">點我看園區地圖</div>
+                </div>`;
+            }
             
         } else if (type === 'hotel') {
             // 解析城景國際的專屬彩色積木卡片
