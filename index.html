@@ -20,6 +20,7 @@
             --text-main: #4a5568;
             --text-muted: #a0aec0;
             --card-border: #bce0fd;
+            --disney-gold: #b89130;
         }
 
         * {
@@ -440,18 +441,25 @@
             line-height: 1.6; 
         }
 
-        /* 必買清單篩選標籤 */
-        .buy-filter-container {
+        /* 篩選標籤容器 (必買與美食通用) */
+        .buy-filter-container, .food-filter-container {
             display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 5px; scrollbar-width: none;
         }
-        .buy-filter-container::-webkit-scrollbar { display: none; }
+        .buy-filter-container::-webkit-scrollbar, .food-filter-container::-webkit-scrollbar { display: none; }
         
-        .buy-filter-pill {
+        .buy-filter-pill, .food-filter-pill {
             flex-shrink: 0; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 900; cursor: pointer;
             border: 2px solid #ffd8a8; color: #d97706; background: white; transition: all 0.2s; box-shadow: 0 3px 0 #ffd8a8;
         }
-        .buy-filter-pill:active { transform: translateY(3px); box-shadow: 0 0 0 #ffd8a8; }
+        .buy-filter-pill:active, .food-filter-pill:active { transform: translateY(3px); box-shadow: 0 0 0 #ffd8a8; }
         .buy-filter-pill.active { background: #ffa94d; color: white; border-color: #ffa94d; box-shadow: 0 3px 0 #e85d04; }
+
+        /* 美食篩選標籤專屬顏色 (粉紅色系) */
+        .food-filter-pill {
+            border-color: #ffb6c1; color: #d87093; box-shadow: 0 3px 0 #ffb6c1;
+        }
+        .food-filter-pill:active { box-shadow: 0 0 0 #ffb6c1; }
+        .food-filter-pill.active { background: #ffb6c1; color: white; border-color: #ffb6c1; box-shadow: 0 3px 0 #d87093; }
 
         /* 必吃美食卡片樣式 */
         .food-card {
@@ -755,6 +763,8 @@
 
     // 必買清單分類狀態
     let currentBuyFilter = 'all';
+    // 美食區域篩選狀態
+    let currentFoodFilter = 'all';
 
     // 必買清單資料庫 (升級為欄位化，自動排版對齊)
     const buyList = [
@@ -793,8 +803,7 @@
             area: "東薈城名店倉",
             hours: "10:00 - 22:00",
             address: "大嶼山達東路20號",
-            url: "#",
-            note: "最後一天去機場前必逛！"
+            url: "#"
         },
         {
             name: "達菲熊周邊小物",
@@ -806,8 +815,56 @@
         }
     ];
 
-    // 必吃美食資料庫 (升級為欄位化，自動排版對齊)
+    // 必吃美食資料庫
     const foodList = [
+        {
+            name: "甘牌燒鵝 Kam's Roast Goose",
+            area: "灣仔",
+            scheduled: true, 
+            suggestDay: "7/15 (三) 灣仔行程當天", 
+            hours: "11:30 - 21:30",
+            address: "灣仔軒尼詩道226號寶華大廈地下 (灣仔站 A4 出口)",
+            phone: "+852 2520 1110",
+            url: "https://www.bigfang.tw/blog/post/kams-roast-goose-hk",
+            type: "🍖 米其林一星燒臘 (連續多年摘星，排隊名店)",
+            note: "創辦人為鏞記酒家第三代。靈魂是燒鵝，建議點『下莊』或『鵝脾』；肥燶叉燒與化皮乳豬也是極品。建議一開店就去領號碼牌，或善用外帶(Take-out)櫃檯免排長龍！"
+        },
+        {
+            name: "一點心 One Dim Sum",
+            area: "太子 / 旺角 / 尖沙咀 / 中環",
+            scheduled: true, 
+            suggestDay: "離飯店近 (太子店步行可達)", 
+            hours: "分店時間不一，詳見備註",
+            address: "1. 太子通菜街209A-209B號地下<br>2. 尖沙咀河內道18號 K11 購物藝術館地下G23號舖<br>3. 中環德輔道中173號南豐大廈1樓",
+            phone: "各分店不同",
+            url: "https://baofamily.tw/onedimsumhk/",
+            type: "🥟 平價米其林一星港點 (必點炸兩腸粉)",
+            note: "1. 太子總店：09:30-23:00 (假日08:30開，離飯店近建議優先選擇)<br>2. 尖沙咀店：11:00-22:00 (位於 K11 購物區)<br>3. 中環店：11:00-22:00 (位於南豐大廈1樓)<br>招牌必點：鮮蝦燒賣皇、薄皮鮮蝦餃、炸兩腸粉、古法糯米雞。平價美味，排隊人潮較多建議避開正餐時間。"
+        },
+        {
+            name: "一蘭拉麵 ICHIRAN",
+            area: "尖沙咀 / 銅鑼灣 / 旺角",
+            scheduled: false, 
+            suggestDay: "宵夜或早餐時段 (人較少)", 
+            hours: "分店時間不一，詳見備註",
+            address: "1. 尖沙咀棉登徑8號地庫<br>2. 銅鑼灣謝斐道440號<br>3. 旺角洗衣街88號",
+            phone: "各分店不同",
+            url: "https://zh-cht.ichiran.com/shop/oversea/hongkong/",
+            type: "🍜 經典豚骨拉麵 (獨特味集中座位)",
+            note: "1. 尖沙咀店：09:00 - 03:00 (次日)<br>2. 銅鑼灣店：09:00 - 05:00 (次日)<br>3. 旺角店：09:00 - 05:00 (次日)<br>著名的『自修室』隔間座，帶小孩也有提供專用兒童餐具喔！"
+        },
+        {
+            name: "澳洲牛奶公司",
+            area: "佐敦",
+            scheduled: true, 
+            suggestDay: "7/12 (日) 抵達當天行程", 
+            hours: "07:30 - 22:00 (每週四公休)",
+            address: "佐敦白加士街47-49號地下 (佐敦站 C2 出口)",
+            phone: "+852 2730 1356",
+            url: "https://bobbytravel.tw/australia-dairy-company/",
+            type: "🥣 經典港式茶餐廳 (排隊人龍極長但翻桌極快)",
+            note: "以『全港最強炒蛋』聞名。服務速度極快(快、狠、準)，建議先想好菜單。必點：炒蛋多士、蛋白燉鮮牛奶、杏汁燉雞蛋。"
+        },
         {
             name: "金華冰廳",
             area: "太子 / 旺角",
@@ -830,7 +887,7 @@
             phone: "+852 2850 5967",
             url: "#",
             type: "🍽️ 建議內用 (需排隊，僅收現金)",
-            note: "上湯牛腩清湯超有名，湯頭濃郁，要有排隊的心理準備！"
+            note: "上湯牛腩清湯超有名，湯頭濃育，要有排隊的心理準備！"
         },
         {
             name: "媽咪雞蛋仔",
@@ -1074,13 +1131,28 @@
         listEl.innerHTML = html;
     }
 
+    // --- 必吃美食區域篩選功能 ---
+    function setFoodFilter(area) {
+        currentFoodFilter = area;
+        // 更新標籤樣式
+        document.querySelectorAll('.food-filter-pill').forEach(el => el.classList.remove('active'));
+        document.getElementById('food-filter-' + area).classList.add('active');
+        // 重新渲染列表
+        renderFoodList();
+    }
+
     // --- 必吃美食渲染功能 ---
     function renderFoodList() {
         const listEl = document.getElementById('food-list-container');
         if (!listEl) return;
 
+        // 依據區域過濾資料 (支持多區域關鍵字比對)
+        const filteredList = currentFoodFilter === 'all' 
+            ? foodList 
+            : foodList.filter(item => item.area.includes(currentFoodFilter));
+
         let html = '';
-        foodList.forEach(item => {
+        filteredList.forEach(item => {
             // 判斷是否已排入行程
             let statusHtml = item.scheduled 
                 ? `<div class="food-status status-yes">✅ 已排入行程</div>` 
@@ -1096,7 +1168,7 @@
             if (item.hours) infoHtml += `<div style="text-align:center;">⏰</div><div>營業：${item.hours}</div>`;
             if (item.address) infoHtml += `<div style="text-align:center;">📍</div><div>地址：${item.address}</div>`;
             if (item.phone) infoHtml += `<div style="text-align:center;">📞</div><div>電話：${item.phone}</div>`;
-            if (item.url) infoHtml += `<div style="text-align:center;">🌐</div><div>連結：<a href="${item.url}" target="_blank" style="color:var(--primary); text-decoration:underline; font-weight:bold;">詳細介紹</a></div>`;
+            if (item.url && item.url !== "#") infoHtml += `<div style="text-align:center;">🌐</div><div>連結：<a href="${item.url}" target="_blank" style="color:var(--primary); text-decoration:underline; font-weight:bold;">詳細介紹</a></div>`;
             infoHtml += `</div>`;
 
             html += `
@@ -1120,8 +1192,8 @@
             `;
         });
 
-        if (foodList.length === 0) {
-            html = `<div style="text-align:center; color:#ccc; border:2px dashed #ffb6c1; padding:20px; border-radius:15px; font-weight:bold;">目前還沒有加入必吃美食喔！</div>`;
+        if (filteredList.length === 0) {
+            html = `<div style="text-align:center; color:#ccc; border:2px dashed #ffb6c1; padding:20px; border-radius:15px; font-weight:bold;">這個區域目前還沒有加入美食喔！</div>`;
         }
         listEl.innerHTML = html;
     }
@@ -1207,7 +1279,7 @@
         if (btnText) btnText.innerText = `📜 查看歷史明細 (共 ${expenses.length} 筆) ${container.classList.contains('show') ? '▴' : '▾'}`;
     }
 
-    // 資料定義 (將原本 extra 的 HTML 改為結構化，以便在獨立頁面呈現)
+    // 資料定義 (行程表)
     const tripData = {
         days: [
             {
@@ -1259,27 +1331,52 @@
                         hotelImg: "cityview_room.jpg", // 預設的飯店房間外觀檔名
                         voucherImg: "cityview_voucher.jpg"
                     },
-                    { trans: "地鐵 荃灣線", icon: "🚇" },
-                    { name: "麥文記麵家", type: "food", menu: "鮮蝦雲吞麵" },
-                    { name: "澳洲牛奶公司", type: "food", menu: "炒牛油蛋多士、燉奶" },
-                    { trans: "散步前往海傍", icon: "🚶" },
-                    { name: "維多利亞港燈光秀", info: "20:00 幻彩詠香江" },
-                    { trans: "搭車返回飯店", icon: "🚇" },
-                    { name: "🏨 城景國際Cityview", info: "結束第一天行程，好好休息 🌙" }
+                    { 
+                        trans: "散步", 
+                        icon: "🚶", 
+                        duration: "約6分鐘", 
+                        externalUrl: "https://www.google.com/maps/dir/%E5%9F%8E%E6%99%AF%E5%9C%8B%E9%9A%9B+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E7%AA%A9%E6%89%93%E8%80%81%E9%81%9323%E8%99%9F/%E8%88%88%E8%A8%98%E8%8F%9C%E9%A4%A8+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E5%BB%9F%E8%A1%9715%E8%99%9F/@22.3125264,114.1682851,17z/data=!3m1!5s0x340400c13059e30d:0x716f40b46fb72e5f!4m14!4m13!1m5!1m1!1s0x340400c130565a83:0x4a91e05e1bdd9b81!2m2!1d114.171644!2d22.313683!1m5!1m1!1s0x340400c05733e8f3:0x6bd784ed56b0a43e!2m2!1d114.1701235!2d22.3113625!3e2?authuser=0&entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D" 
+                    },
+                    { 
+                        time: "14:00", 
+                        name: "興記煲仔飯", 
+                        type: "food", 
+                        mealDetails: "🔥 <strong>正宗炭爐熬煮</strong>：吃到底部焦香『鍋巴』才是靈魂！<br>🍳 <strong>必點推薦</strong>：黃鱔煲仔飯、章魚雞粒煲仔飯、窩蛋牛肉煲仔飯。<br>🦪 <strong>鎮店之寶</strong>：煎蠔餅 (酥脆多汁，建議點小份就很夠吃)。<br>🧂 <strong>吃法秘訣</strong>：上桌先淋上興記『特製甜豉油』，蓋上悶 5 分鐘最美味！<br>📍 <strong>攻略</strong>：位於廟街十九號，周邊有多個分店。外帶(Take-out)有專櫃速度極快。" 
+                    },
+                    { trans: "散步回飯店", icon: "🚶", duration: "約6分鐘" },
+                    { time: "15:30", name: "🏨 城景國際Cityview", info: "辦理入住，進房間放行李稍作休息 🧳" },
+                    { trans: "出發逛街 (往南走)", icon: "🚶" },
+                    { time: "16:30", name: "廟街夜市", info: "體驗道地香港街頭氛圍，一路往南逛" },
+                    { 
+                        time: "17:30", 
+                        name: "澳洲牛奶公司", 
+                        type: "food", 
+                        info: "💡 彈性行程：肚子若太撐可改天再吃",
+                        mealDetails: "🔥 <strong>全港最強炒蛋</strong>：滑嫩香濃的炒牛油蛋多士是必點！<br>🥛 <strong>招牌甜品</strong>：蛋白燉鮮牛奶，冷熱皆宜。<br>⚡ <strong>澳牛文化</strong>：點餐與吃東西速度都要快，體驗道地香港效率。<br>📍 <strong>攻略</strong>：當作下午茶剛剛好，排隊人潮多但翻桌極快！" 
+                    },
+                    { trans: "散步或搭地鐵前往尖沙咀", icon: "🚶", duration: "前往海傍" },
+                    { time: "18:30", name: "尖沙咀海濱花園 & 星光大道", info: "吹海風、看夕陽夜景，可順便逛海港城" },
+                    { time: "20:00", name: "維港燈光秀", info: "幻彩詠香江 (最佳觀賞點：尖沙咀鐘樓旁)" },
+                    { trans: "地鐵 荃灣線 (尖沙咀 ➔ 油麻地)", icon: "🚇" },
+                    { time: "21:00", name: "🏨 城景國際Cityview", info: "結束第一天行程，好好休息 🌙" }
                 ]
             },
             {
                 date: "7/13 (一)",
                 title: "海洋公園主題日",
                 itinerary: [
+                    { name: "🏨 城景國際Cityview", info: "活力滿滿，準備出發！" },
                     { 
-                        name: "🏨 城景國際Cityview", 
-                        info: "活力滿滿，準備出發！" 
+                        trans: "<div style='display:inline-flex; align-items:flex-end; margin-top:-2px;'><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#e2231a; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>油麻地</span><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; z-index:2;'></div></div><div style='width:18px; height:3.5px; background:#e2231a; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#444; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>金鐘</span><div style='display:flex; z-index:2;'><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; margin-right:-4px; position:relative; z-index:3;'></div><div style='width:5px; height:5px; background:white; border:2.5px solid #059669; border-radius:50%; position:relative; z-index:2;'></div></div></div><div style='width:18px; height:3.5px; background:#059669; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#059669; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>海洋公園</span><div style='width:5px; height:5px; background:white; border:2.5px solid #059669; border-radius:50%; z-index:2;'></div></div></div>", 
+                        icon: "🚇", 
+                        duration: "約35分",
+                        externalUrl: "https://www.google.com/maps/dir/%E5%9F%8E%E6%99%AF%E5%9C%8B%E9%9A%9B+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E7%AA%A9%E6%89%93%E8%80%81%E9%81%9323%E8%99%9F/%E9%A6%99%E6%B8%AF%E6%B5%B7%E6%B4%8B%E5%85%AC%E5%9C%92+%E9%A6%99%E6%B8%AF%E9%A6%99%E6%B8%AF%E4%BB%94/@22.2797176,114.1320761,13z/am=t/data=!4m14!4m13!1m5!1m1!1s0x340400c130565a83:0x4a91e05e1bdd9b81!2m2!1d114.171644!2d22.313683!1m5!1m1!1s0x34040024320621e1:0xf3d1aa8549fb1946!2m2!1d114.1757239!2d22.2466607!3e3?authuser=0&entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D"
                     },
-                    { trans: "搭乘地鐵出發", icon: "🚇" },
                     { 
                         name: "香港海洋公園", 
                         type: "spot", 
+                        btnText: "遊園攻略",
+                        customStyle: "oceanpark",
                         spotInfo: "🎟️ 票價：成人 HK$498 / 小童 HK$249<br>⏰ 營業時間：10:00 - 19:30<br>🎢 必玩設施：登山纜車、海洋奇觀(水族館)、大熊貓之旅" 
                     },
                     { trans: "地鐵 南港島線", icon: "🚇" },
@@ -1292,10 +1389,7 @@
                 date: "7/14 (二)",
                 title: "迪士尼魔法世界",
                 itinerary: [
-                    { 
-                        name: "🏨 城景國際Cityview", 
-                        info: "活力滿滿，準備出發！" 
-                    },
+                    { name: "🏨 城景國際Cityview", info: "活力滿滿，準備出發！" },
                     { trans: "搭乘地鐵出發", icon: "🚇" },
                     { name: "香港迪士尼樂園", type: "spot", spotInfo: "🎟️ 票價：HK$639起 (依日子而定)<br>⏰ 營業時間：10:30 - 20:30<br>🏰 必玩重點：魔雪奇緣世界、夜間城堡煙火秀" },
                     { trans: "地鐵 迪士尼線", icon: "🏰" },
@@ -1306,17 +1400,21 @@
             },
             {
                 date: "7/15 (三)",
-                title: "大嶼山纜車之旅",
+                title: "迪士尼奇妙之旅",
                 itinerary: [
+                    { name: "🏨 城景國際Cityview", info: "活力滿滿，準備出發！" },
                     { 
-                        name: "🏨 城景國際Cityview", 
-                        info: "活力滿滿，準備出發！" 
+                        trans: "<div style='display:inline-flex; align-items:flex-end; margin-top:-2px;'><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#e2231a; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>油麻地</span><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; z-index:2;'></div></div><div style='width:18px; height:3.5px; background:#e2231a; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#444; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>荔景</span><div style='display:flex; z-index:2;'><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; margin-right:-4px; position:relative; z-index:3;'></div><div style='width:5px; height:5px; background:white; border:2.5px solid #f38b00; border-radius:50%; position:relative; z-index:2;'></div></div></div><div style='width:18px; height:3.5px; background:#f38b00; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#444; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>欣澳</span><div style='display:flex; z-index:2;'><div style='width:5px; height:5px; background:white; border:2.5px solid #f38b00; border-radius:50%; margin-right:-4px; position:relative; z-index:3;'></div><div style='width:5px; height:5px; background:white; border:2.5px solid #ff69b4; border-radius:50%; position:relative; z-index:2;'></div></div></div><div style='width:18px; height:3.5px; background:#ff69b4; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#ff69b4; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>迪士尼</span><div style='width:5px; height:5px; background:white; border:2.5px solid #ff69b4; border-radius:50%; z-index:2;'></div></div></div>", 
+                        icon: "🚇", 
+                        duration: "約60分",
+                        externalUrl: "https://www.google.com/maps/dir/%E5%9F%8E%E6%99%AF%E5%9C%8B%E9%9A%9B+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E7%AA%A9%E6%89%93%E8%80%81%E9%81%9323%E8%99%9F/%E9%A6%99%E6%B8%AF%E8%BF%AA%E5%A3%AB%E5%B0%BC%E6%A8%82%E5%9C%92+%E9%A6%99%E6%B8%AF%E5%A4%A7%E5%B6%BC%E5%B1%B1/@22.3268929,114.0234331,12z/am=t/data=!4m14!4m13!1m5!1m1!1s0x340400c130565a83:0x4a91e05e1bdd9b81!2m2!1d114.171644!2d22.313683!1m5!1m1!1s0x3403fc2f53d3953d:0x35b3af6ce4475405!2m2!1d114.0412819!2d22.3129666!3e3?authuser=0&entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D"
                     },
-                    { trans: "搭乘地鐵出發", icon: "🚇" },
-                    { name: "昂坪 360 纜車", type: "spot", spotInfo: "🎟️ 票價：來回約 HK$235 (建議預約水晶車廂)<br>⏰ 營業時間：10:00 - 18:00<br>📸 必訪重點：天壇大佛、昂坪市集" },
-                    { trans: "地鐵 東涌線", icon: "🚇" },
-                    { name: "甘牌燒鵝", type: "food", menu: "米其林一星燒鵝、叉燒" },
-                    { trans: "搭車返回飯店", icon: "🚇" },
+                    { 
+                        name: "香港迪士尼樂園", 
+                        type: "spot", 
+                        spotInfo: "🎟️ 票價：HK$639起 (依日子而定)<br>⏰ 營業時間：10:30 - 20:30<br>🏰 必玩重點：魔雪奇緣世界、夜間城堡煙火秀" 
+                    },
+                    { trans: "搭車返回飯店 (迪士尼➔欣澳➔荔景➔油麻地)", icon: "🚇", duration: "約45分" },
                     { name: "🏨 城景國際Cityview", info: "結束第四天行程，好好休息 🌙" }
                 ]
             },
@@ -1324,10 +1422,7 @@
                 date: "7/16 (四)",
                 title: "叮叮車與太平山",
                 itinerary: [
-                    { 
-                        name: "🏨 城景國際Cityview", 
-                        info: "活力滿滿，準備出發！" 
-                    },
+                    { name: "🏨 城景國際Cityview", info: "活力滿滿，準備出發！" },
                     { trans: "搭乘地鐵出發", icon: "🚇" },
                     { name: "中環半山扶手電梯", info: "世界最長戶外電梯" },
                     { trans: "叮叮車 (中環➔灣仔)", icon: "🚃" },
@@ -1344,32 +1439,53 @@
                 title: "大嶼山纜車 & 回程",
                 itinerary: [
                     { 
+                        time: "09:30", 
                         name: "🏨 城景國際Cityview", 
                         info: "辦理退房，帶著行李出發大嶼山！ 🧳" 
                     },
                     { 
-                        trans: "<span style='font-size:13px; letter-spacing:-0.5px;'><span style='color:#e2231a; font-weight:900;'>荃灣線</span>➔<span style='color:#f38b00; font-weight:900;'>東涌線</span></span>", 
+                        trans: "<div style='display:inline-flex; align-items:flex-end; margin-top:-2px;'><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#e2231a; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>油麻地</span><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; z-index:2;'></div></div><div style='width:18px; height:3.5px; background:#e2231a; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#444; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>荔景</span><div style='display:flex; z-index:2;'><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; margin-right:-4px; position:relative; z-index:3;'></div><div style='width:5px; height:5px; background:white; border:2.5px solid #f38b00; border-radius:50%; position:relative; z-index:2;'></div></div></div><div style='width:18px; height:3.5px; background:#f38b00; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#f38b00; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>東涌</span><div style='width:5px; height:5px; background:white; border:2.5px solid #f38b00; border-radius:50%; z-index:2;'></div></div></div>", 
                         icon: "🚇", 
                         duration: "約50分",
                         externalUrl: "https://www.google.com/maps/dir/%E5%9F%8E%E6%99%AF%E5%9C%8B%E9%9A%9B+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E7%AA%A9%E6%89%93%E8%80%81%E9%81%9323%E8%99%9F/%E6%9D%B1%E8%96%88%E5%9F%8E%E5%90%8D%E5%BA%97%E5%80%89+%E9%A6%99%E6%B8%AF%E5%A4%A7%E5%B6%BC%E5%B1%B1%E9%81%94%E6%9D%B1%E8%B7%AF20%E8%99%9F/@22.3237215,113.9775268,12z/am=t/data=!4m14!4m13!1m5!1m1!1s0x340400c130565a83:0x4a91e05e1bdd9b81!2m2!1d114.171644!2d22.313683!1m5!1m1!1s0x3403e3ef3258fa0d:0xe0944b7b63ed2a6f!2m2!1d113.9412938!2d22.289733!3e3?authuser=0&entry=ttu&g_ep=EgoyMDI2MDMxMS4wIKXMDSoASAFQAw%3D%3D"
                     },
                     { 
+                        time: "10:30",
                         name: "東薈城名店倉 Citygate", 
                         type: "spot", 
                         info: "🧳 先到 B2 或 B3 寄放行李",
+                        customStyle: "citygate",
                         lockerUrl: "https://www.citygateoutlets.com.hk/-/media/Images/SwireCitygate/SitePdfs/2024-Locker-PDF.ashx?rev=8fbe0b2dc85649ce8d93b3beeb31d00a",
                         spotInfo: "⏰ 營業時間：10:00 - 22:00<br>🎒 寄放行李：商場 B2/B3 有大型智慧置物櫃可寄放行李喔！<br>🛍️ 必逛重點：離港前最後血拼！各大品牌 Outlet 折扣",
                         mapUrl: "https://www.citygateoutlets.com.hk/zh-hk/floor-plan/"
                     },
                     { trans: "步行前往纜車站", icon: "🚶" },
                     { 
+                        time: "11:00",
                         name: "昂坪 360 纜車", 
                         type: "spot", 
-                        spotInfo: "🎟️ 票價：來回約 HK$235 (建議預約水晶車廂)<br>⏰ 營業時間：10:00 - 18:00<br>📸 必訪重點：天壇大佛、昂坪市集" 
+                        info: "搭纜車看大佛、逛昂坪市集",
+                        customStyle: "ngongping",
+                        spotInfo: "🎟️ <strong>強烈建議預先購票</strong>：現場買票大排長龍！持電子憑證換票走專用通道最省時。<br>🚠 <strong>車廂推薦</strong>：推薦加價體驗『水晶車廂』(透明底)，單程約 25 分鐘，沿途俯瞰機場與港珠澳大橋。<br>📸 <strong>必訪路線</strong>：出站後漫步『昂坪市集』 ➔ 挑戰 268 階登頂參拜『天壇大佛』。<br>⏰ <strong>營業時間</strong>：10:00 - 18:00 (假日至18:30)" 
                     },
-                    { trans: "S1 巴士 ➔ 香港國際機場", icon: "🚌", duration: "約25分鐘" },
-                    { time: "16:25", name: "抵達香港國際機場", info: "辦理登機與托運行李" },
-                    { time: "19:25", name: "✈️ 起飛回台", info: "長榮航空 BR850 返回高雄小港" }
+                    { trans: "搭乘纜車下山回到東涌", icon: "🚠", duration: "約30分" },
+                    { 
+                        time: "13:30", 
+                        name: "東薈城名店倉 (午餐 & 血拼)", 
+                        type: "spot",
+                        customStyle: "citygate",
+                        info: "在商場享用午餐，把握最後的免稅購物時間 🛍️" 
+                    },
+                    { trans: "領取行李，前往巴士站", icon: "🧳" },
+                    { 
+                        time: "16:00",
+                        trans: "S1 巴士 ➔ 香港國際機場", 
+                        icon: "🚌", 
+                        duration: "約25分鐘" 
+                    },
+                    { time: "16:25", name: "抵達機場", info: "辦理登機與托運行李" },
+                    { time: "19:25", name: "✈️ 起飛回台", info: "長榮航空 BR850 返回高雄小港" },
+                    { name: "🎉 旅途愉快", info: "平安抵達溫暖的家 🏠" }
                 ]
             }
         ]
@@ -1488,8 +1604,17 @@
                 <div id="sec-food" class="home-section" style="display: none;">
                     <div class="section-card" style="background:#fff0f5; border-color:#ffb6c1; box-shadow: 0 6px 0 #ffb6c1;">
                         <h3 style="margin-top:0; color:#d87093;">🤤 絕不放過的美食</h3>
-                        <p style="color:#555; font-weight:bold; margin-bottom: 15px;">想吃的通通記下來，隨時可以安插進行程！</p>
                         
+                        <!-- 區域篩選標籤 -->
+                        <div class="food-filter-container">
+                            <div id="food-filter-all" class="food-filter-pill active" onclick="setFoodFilter('all')">全部</div>
+                            <div id="food-filter-佐敦" class="food-filter-pill" onclick="setFoodFilter('佐敦')">📍 佐敦</div>
+                            <div id="food-filter-尖沙咀" class="food-filter-pill" onclick="setFoodFilter('尖沙咀')">📍 尖沙咀</div>
+                            <div id="food-filter-旺角" class="food-filter-pill" onclick="setFoodFilter('旺角')">📍 旺角</div>
+                            <div id="food-filter-銅鑼灣" class="food-filter-pill" onclick="setFoodFilter('銅鑼灣')">📍 銅鑼灣</div>
+                            <div id="food-filter-中環" class="food-filter-pill" onclick="setFoodFilter('中環')">📍 中環</div>
+                        </div>
+
                         <!-- 必吃清單渲染區 -->
                         <div id="food-list-container">
                             <!-- 內容由 renderFoodList() 動態生成 -->
@@ -1677,7 +1802,7 @@
 
                 <div class="section-card" style="background:var(--yellow); border-color:#d4a300; box-shadow: 0 6px 0 #d4a300; margin-top: 25px;">
                     <strong>💡 溫馨提醒</strong>
-                    <p style="margin-bottom:0; font-size:14px; font-weight:bold; line-height: 1.6;">帶小孩建議至少提前 2.5 小時抵達機場辦理登機與托運手續喔！</p>
+                    <p style="margin-bottom:0; font-size:14px; font-weight:bold; line-height: 1.6;">帶小孩建議至少提前 2.5 小時抵時機場辦理登機與托運手續喔！</p>
                 </div>
             `;
         } 
@@ -1685,7 +1810,7 @@
             html = `
                 <div class="page-title">💰 匯率與記帳</div>
                 <div class="section-card calc-box" style="border-color: var(--mint); box-shadow: 0 6px 0 var(--mint); margin-bottom: 15px;">
-                    <h3 style="color:#2c5d4a; margin-top:0;">💱 港幣換算機</h3>
+                    <h3 style="color:#2c5d4a; margin-top:0;">💒 港幣換算機</h3>
                     <p style="font-size:14px; color:#666;">預估匯率 1 HKD ≈ 4.1 TWD</p>
                     <input type="number" id="hkdInput" placeholder="輸入港幣 HKD..." oninput="calculateHKD()">
                     <div style="margin-top:10px; font-size:16px; color:#555;">
@@ -1823,8 +1948,8 @@
                             ⏱️ 車程：至油麻地【文明里】站約 45-50 分鐘
                         </div>
                         <a href="https://mobile.citybus.com.hk/nwp3/?f=1&ds=A21&dsmode=1&l=0" target="_blank" style="text-decoration:none; display:block; margin-top:15px;">
-                            <button class="action-btn" style="margin-top:0; justify-content:center; background:var(--primary); border-color:#0288d1; color:white; box-shadow: 0 5px 0 #0288d1; width: 100%;">
-                                <span style="font-size: 16px;">🗺️ 點我看 A21 官方即時路線圖</span>
+                            <button class="action-btn" style="margin-top:0; justify-content:center; background:var(--primary); border-color:#0288d1; color:white; box-shadow: 0 5px 0 #0288d1; margin-top:0;">
+                                <span style="font-size: 16px;">🗺️ 點我看 A21 官方即時路線圖 👆</span>
                             </button>
                         </a>
                     </div>
@@ -1876,8 +2001,8 @@
                             ⏱️ 特色：不論搭多遠都是這個超佛心價格！
                         </div>
                         <a href="https://www.hktramways.com/tc/interactive-map/" target="_blank" style="text-decoration:none; display:block; margin-top:15px;">
-                            <button class="action-btn" style="margin-top:0; justify-content:center; background:#fef08a; border-color:#d97706; color:#b45309; box-shadow: 0 5px 0 #d97706; width: 100%;">
-                                <span style="font-size: 16px;">🗺️ 點我看官方互動路線圖</span>
+                            <button class="action-btn" style="margin-top:0; justify-content:center; background:#fef08a; border-color:#d97706; color:#b45309; box-shadow: 0 5px 0 #d97706; margin-top:0;">
+                                <span style="font-size: 16px;">🗺️ 點我看官方互動路線圖 👆</span>
                             </button>
                         </a>
                     </div>
@@ -2064,8 +2189,8 @@
                     let borderBottom = isLast ? 'none' : `2px dotted ${cat.border}`;
                     return `
                         <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:${borderBottom}; font-weight:bold; font-size:16px;">
-                            <span style="color:#888;">🇹🇼 ${w.tw}</span>
-                            <span style="color:${cat.color};">🇭🇰 ${w.hk}</span>
+                            <span style="color:#888;">${w.tw}</span>
+                            <span style="color:${cat.color};">${w.hk}</span>
                         </div>
                     `;
                 }).join('');
@@ -2119,6 +2244,8 @@
 
         html += `<h2 class="day-title">${day.date} ${day.title}</h2>`;
         day.itinerary.forEach((step, stepIdx) => {
+            const isLastItem = stepIdx === day.itinerary.length - 1;
+
             if (step.trans) {
                 let durationHtml = step.duration ? `<span style="font-size:12px; color:#888; font-weight:bold;">⏱️ ${step.duration}</span>` : '';
                 if (step.externalUrl) {
@@ -2151,8 +2278,9 @@
                         </button>`;
                     } else if (step.type === 'spot') {
                         // 景點資訊專屬的迷你可愛按鈕
+                        let btnText = step.btnText || '景點資訊';
                         btnHtml = `<button class="mini-btn" style="background:#e6fcf5; border-color:#96f2d7; color:#087f5b; box-shadow: 0 3px 0 #96f2d7;" onclick="openTripDetailModal(${index}, ${stepIdx})">
-                            🎡 景點資訊 <span style="font-size:13px;">✨</span>
+                            🎡 ${btnText} <span style="font-size:13px;">✨</span>
                         </button>`;
 
                         // 如果有行李寄放櫃的連結，則在旁邊動態加上專屬按鈕
@@ -2163,12 +2291,11 @@
                                 </button>
                             </a>`;
                         }
-                    } else if (step.type) {
-                        // 美食按鈕縮小為更精緻的次要按鈕
-                        let btnClass = 'action-btn secondary';
-                        let detailType = '推薦必點';
-                        btnHtml = `<button class="${btnClass}" onclick="openTripDetailModal(${index}, ${stepIdx})">
-                            <span>${detailType}</span><span class="icon-tag">🔍</span></button>`;
+                    } else if (step.type === 'food') {
+                        // 美食按鈕調整為 mini-btn 樣式
+                        btnHtml = `<button class="mini-btn" style="background:#fff4e6; border-color:#ffa94d; color:#d97706; box-shadow: 0 3px 0 #ffa94d;" onclick="openTripDetailModal(${index}, ${stepIdx})">
+                            🥣 餐點介紹 <span style="font-size:13px;">✨</span>
+                        </button>`;
                     }
 
                     // 檢查是否有訂房憑證的圖檔設定
@@ -2185,11 +2312,16 @@
                         actionButtons = `<div style="display:flex; flex-wrap:wrap; gap:6px;">${btnHtml}${voucherBtn}</div>`;
                     }
                     
+                    // 判定是否為最後一張卡片，若是則加上回頂部功能
+                    let backTopHint = isLastItem ? `<div style="text-align: right; font-size: 11px; color: var(--primary); font-weight: 900; margin-top: 8px;">⬆️ 點擊回頂部</div>` : '';
+                    let cardClickAttr = isLastItem ? `onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" style="cursor: pointer;"` : '';
+
                     html += `
-                        <div class="section-card">
+                        <div class="section-card" ${cardClickAttr}>
                             <div style="font-size:18px; color:#444; font-weight:bold;">${step.time ? `<span style="color:var(--primary);">${step.time}</span> ` : ''}${step.name}</div>
                             ${cardSubtitle ? `<p style="font-size:12px; color:#888; margin:6px 0 4px; font-weight:bold; opacity:0.9;">${cardSubtitle}</p>` : ''}
                             ${actionButtons}
+                            ${backTopHint}
                         </div>
                     `;
                 }
@@ -2206,8 +2338,8 @@
 
     function openTripDetailModal(dayIndex, stepIndex) {
         const step = tripData.days[dayIndex].itinerary[stepIndex];
-        let extraInfo = step.hotelInfo || step.spotInfo || (step.type === 'food' ? step.menu : step.price) || step.info || '';
-        openDetailModal(step.name, step.type, extraInfo, step.mapUrl, step.hotelImg);
+        let extraInfo = step.hotelInfo || step.spotInfo || step.mealDetails || (step.type === 'food' ? step.menu : step.price) || step.info || '';
+        openDetailModal(step.name, step.type, extraInfo, step.mapUrl, step.hotelImg, step.customStyle);
     }
 
     // 開啟憑證圖檔的專屬彈窗
@@ -2236,84 +2368,308 @@
         setTimeout(() => modal.classList.add('show'), 10);
     }
 
-    function openDetailModal(name, type, extraInfo, mapUrl, hotelImg) {
-        let content = `<h3 style="color:var(--primary); margin-top:0; text-align:center; font-size:26px; text-shadow: 2px 2px 0px #d0ebff; letter-spacing:1px;">${name}</h3>`;
-        
-        if (type === 'food') {
-            // 解析原本的美食資訊
-            content += `
-            <div style="background:#fff4e6; border:3px solid #ffa94d; border-radius:16px; padding:12px 15px; margin-bottom:15px; font-weight:bold; color:#d97706; text-align:left; box-shadow: 0 4px 0 #ffa94d;">
-                🤤 推薦必點：${extraInfo}
-            </div>
-            <div class="img-placeholder" style="background: repeating-linear-gradient(45deg, #fff0f5, #fff0f5 15px, #ffe4e1 15px, #ffe4e1 30px); border:4px dashed #ffb6c1; color:#d87093; border-radius: 20px; height: 160px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
-                <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2.5s ease-in-out infinite;">🍔</div>
-                <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #ffb6c1; font-size:14px; box-shadow: 0 3px 0 #ffb6c1;">餐點圖片預覽區</div>
-            </div>`;
-        
-        } else if (type === 'spot') {
-            // 解析原本的 br 為獨立的彩色積木卡片
-            let infoBlocks = extraInfo.split('<br>').map(line => {
-                let bg = '#fff', border = '#eee', color = '#555';
-                if (line.includes('🎟️')) { bg = '#fff4e6'; border = '#ffa94d'; color = '#d97706'; }
-                else if (line.includes('⏰')) { bg = '#f4fbff'; border = '#3eb8f2'; color = '#0288d1'; }
-                else if (line.includes('必玩') || line.includes('必訪') || line.includes('📸') || line.includes('🏰')) { bg = '#f3e8ff'; border = '#e4c1f9'; color = '#7e22ce'; }
+    function openDetailModal(name, type, extraInfo, mapUrl, hotelImg, customStyle) {
+        let content = '';
 
-                return `<div style="background:${bg}; border:3px solid ${border}; border-radius:16px; padding:12px 15px; margin-bottom:12px; font-weight:bold; color:${color}; text-align:left; box-shadow: 0 4px 0 ${border}; line-height: 1.5; font-size:15px;">
-                    ${line}
-                </div>`;
-            }).join('');
+        if (customStyle === 'ngongping') {
+            // 專屬：昂坪360纜車的韓國排版風格
+            content = `
+                <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid #ffa94d; text-align: center;">
+                    <h3 style="color: #333; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">🚠 昂坪 360 全攻略</h3>
+                    <span style="position: absolute; right: 0px; top: -15px; font-size: 35px; opacity: 0.2;">🏔️</span>
+                </div>
 
-            content += `
-            <div style="margin-top:15px; margin-bottom: 20px;">
-                ${infoBlocks}
-            </div>`;
-            
-            if (mapUrl) {
-                content += `
-                <a href="${mapUrl}" target="_blank" style="text-decoration:none; display:block;">
-                    <button class="action-btn" style="margin-top:0; justify-content:center; background:#e6fcf5; border-color:#20c997; color:#087f5b; box-shadow: 0 5px 0 #20c997; width: 100%;">
-                        <span style="font-size: 16px;">🗺️ 商場地圖</span>
-                    </button>
-                </a>`;
-            } else {
-                content += `
-                <div class="img-placeholder" style="background: repeating-linear-gradient(-45deg, #e6fcf5, #e6fcf5 15px, #f1fdf9 15px, #f1fdf9 30px); border:4px dashed #20c997; color:#087f5b; border-radius: 20px; height: 160px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
-                    <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2s ease-in-out infinite;">🎈</div>
-                    <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #20c997; font-size:14px; box-shadow: 0 3px 0 #20c997;">點我看園區地圖</div>
-                </div>`;
-            }
-            
-        } else if (type === 'hotel') {
-            // 將照片預覽區移到最上面
-            content = `<h3 style="color:var(--primary); margin-top:0; text-align:center; font-size:26px; text-shadow: 2px 2px 0px #d0ebff; letter-spacing:1px;">${name}</h3>`;
-            
-            // 飯店照片預覽區 (優先顯示)
-            let finalHotelImg = hotelImg || 'hotel_room.jpg';
-            content += `
-            <div style="margin-bottom: 20px;">
-                <div style="background: #f3e8ff; border:4px dashed #d8b4fe; color:#7e22ce; border-radius: 20px; height: 180px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                    <img src="${finalHotelImg}" alt="飯店照片" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div style="display:none; flex-direction: column; align-items: center; justify-content: center;">
-                        <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2.2s ease-in-out infinite;">🏨</div>
-                        <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #d8b4fe; font-size:14px; box-shadow: 0 3px 0 #d8b4fe;">⏳ 請確認檔名：${finalHotelImg}</div>
+                <!-- 營業時間區塊 (對應參考圖橘色區塊) -->
+                <div style="background: #fff8f0; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #ffedd5;">
+                    <div style="color: #c2410c; font-weight: 900; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span style="background: #c2410c; color: white; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px;">🕒</span> 營業時間與地點
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: #444; font-size: 14px;">
+                        <span>平日時段：</span><span style="color: #0288d1; font-weight: 900;">10:00 - 18:00</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: bold; color: #444; font-size: 14px;">
+                        <span>假日時段：</span><span style="color: #e2231a; font-weight: 900;">10:00 - 18:30</span>
+                    </div>
+                    <div style="font-size: 12px; color: #888; font-weight: bold; display: flex; align-items: center; gap: 4px;">
+                        <span>📍</span> 乘車處位於東涌站 B 出口附近
                     </div>
                 </div>
-            </div>`;
 
-            // 解析城景國際的專屬彩色積木卡片 (放在照片下方)
-            let infoBlocks = extraInfo.split('<br>').map(line => {
-                let bg = '#f4fbff', border = '#3eb8f2', color = '#0288d1'; // 預設天空藍
-                if (line.includes('🛏️') || line.includes('🕒')) { bg = '#fff4e6'; border = '#ffa94d'; color = '#d97706'; } // 橘色 (房型/時間)
-                else if (line.includes('🌱')) { bg = '#e6fcf5'; border = '#20c997'; color = '#087f5b'; } // 薄荷綠 (環保)
-                else if (line.includes('🔌')) { bg = '#f3e8ff'; border = '#e4c1f9'; color = '#7e22ce'; } // 淺紫 (插座)
-                else if (line.includes('📍') || line.includes('🌃')) { bg = '#ffe4e1'; border = '#ffb6c1'; color = '#d87093'; } // 粉色 (位置)
+                <!-- 攻略區塊 (對應參考圖虛線區塊) -->
+                <div style="background: #fff; border: 2px dashed #fecdd3; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                    <div style="color: #e11d48; font-weight: 900; font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                        <span>🔥</span> 必備攻略 (強烈建議)
+                    </div>
+                    
+                    <!-- 項目 1 -->
+                    <div style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <div style="font-weight: 900; font-size: 16px; color: #333;">🎟️ 預先購票 <span style="background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; vertical-align: middle; margin-left: 4px; box-shadow: 0 2px 0 #b91c1c;">省時必備</span></div>
+                            <div style="background: #f1f5f9; color: #64748b; font-size: 11px; padding: 2px 6px; border-radius: 8px; font-weight: bold;">平台換票</div>
+                        </div>
+                        <ul style="margin: 0; padding-left: 24px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                            <li>現場買票大排長龍！持電子憑證換票走專屬通道最快。</li>
+                        </ul>
+                    </div>
 
-                return `<div style="background:${bg}; border:3px solid ${border}; border-radius:16px; padding:12px 15px; margin-bottom:12px; font-weight:bold; color:${color}; text-align:left; box-shadow: 0 4px 0 ${border}; line-height: 1.5; font-size:15px;">
-                    ${line}
+                    <!-- 項目 2 -->
+                    <div style="margin-bottom: 5px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <div style="font-weight: 900; font-size: 16px; color: #333;">🚠 水晶車廂 <span style="background: #f59e0b; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; vertical-align: middle; margin-left: 4px; box-shadow: 0 2px 0 #d97706;">網美最愛</span></div>
+                        </div>
+                        <ul style="margin: 0; padding-left: 24px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                            <li>推薦加價體驗透明玻璃底，單程約 25 分鐘。</li>
+                            <li>沿途俯瞰機場與港珠澳大橋，視野極佳。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 路線區塊 (對應參考圖藍色區塊) -->
+                <div style="background: #f0f9ff; border-radius: 15px; padding: 15px; border: 1px solid #bae6fd;">
+                    <div style="color: #0369a1; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                        <span>📸</span> 登頂必訪路線
+                    </div>
+                    <div style="background: white; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: bold; color: #444; box-shadow: 0 2px 5px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 10px; line-height: 1.6;">
+                        <span style="font-size: 20px;">🚶</span>
+                        <div>漫步「昂坪市集」<br>➔ 挑戰 268 階參拜「天壇大佛」</div>
+                    </div>
+                </div>
+            `;
+        } else if (customStyle === 'citygate') {
+            // 專屬：東薈城名店倉的韓國排版風格
+            content = `
+                <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid #3eb8f2; text-align: center;">
+                    <h3 style="color: #333; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">🛍️ 東薈城名店倉 全攻略</h3>
+                    <span style="position: absolute; right: 0px; top: -15px; font-size: 35px; opacity: 0.2;">🏬</span>
+                </div>
+
+                <!-- 營業時間區塊 -->
+                <div style="background: #f0f9ff; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #bae6fd;">
+                    <div style="color: #0369a1; font-weight: 900; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span style="background: #0369a1; color: white; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px;">🕒</span> 營業時間與地點
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: #444; font-size: 14px;">
+                        <span>營業時間：</span><span style="color: #0288d1; font-weight: 900;">10:00 - 22:00</span>
+                    </div>
+                    <div style="font-size: 12px; color: #888; font-weight: bold; display: flex; align-items: center; gap: 4px;">
+                        <span>📍</span> 東涌站 C 出口步行即達
+                    </div>
+                </div>
+
+                <!-- 攻略區塊 -->
+                <div style="background: #fff; border: 2px dashed #fecdd3; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                    <div style="color: #e11d48; font-weight: 900; font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                        <span>🔥</span> 購物與寄物攻略
+                    </div>
+                    
+                    <!-- 項目 1 -->
+                    <div style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <div style="font-weight: 900; font-size: 16px; color: #333;">🧳 寄放行李 <span style="background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; vertical-align: middle; margin-left: 4px; box-shadow: 0 2px 0 #b91c1c;">解放雙手</span></div>
+                            <div style="background: #f1f5f9; color: #64748b; font-size: 11px; padding: 2px 6px; border-radius: 8px; font-weight: bold;">B2 / B3 樓層</div>
+                        </div>
+                        <ul style="margin: 0; padding-left: 24px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                            <li>商場內設有大型智慧置物櫃可寄放行李喔！</li>
+                            <li><a href="https://www.citygateoutlets.com.hk/-/media/Images/SwireCitygate/SitePdfs/2024-Locker-PDF.ashx" target="_blank" style="color: #0288d1; text-decoration: underline;">點我看官方置物櫃位置圖</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- 項目 2 -->
+                    <div style="margin-bottom: 5px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <div style="font-weight: 900; font-size: 16px; color: #333;">🛍️ Outlet 撿便宜 <span style="background: #f59e0b; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; vertical-align: middle; margin-left: 4px; box-shadow: 0 2px 0 #d97706;">最後衝刺</span></div>
+                        </div>
+                        <ul style="margin: 0; padding-left: 24px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                            <li>離港前最後血拼！各大知名運動品牌與精品折扣。</li>
+                            <li><a href="https://www.citygateoutlets.com.hk/zh-hk/floor-plan/" target="_blank" style="color: #0288d1; text-decoration: underline;">點我看商場各樓層地圖</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 路線區塊 -->
+                <div style="background: #fff8f0; border-radius: 15px; padding: 15px; border: 1px solid #ffedd5;">
+                    <div style="color: #c2410c; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                        <span>🚌</span> 前往機場交通
+                    </div>
+                    <div style="background: white; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: bold; color: #444; box-shadow: 0 2px 5px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 10px; line-height: 1.6;">
+                        <span style="font-size: 20px;">✈️</span>
+                        <div>東涌消防局旁搭乘 <strong>S1 巴士</strong><br>➔ 約 25 分鐘直達香港國際機場</div>
+                    </div>
+                </div>
+            `;
+        } else if (customStyle === 'oceanpark') {
+            // 專屬：香港海洋公園的超詳細攻略排版
+            content = `
+                <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid #087f5b; text-align: center;">
+                    <h3 style="color: #333; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">🎢 香港海洋公園 全攻略</h3>
+                    <span style="position: absolute; right: 0px; top: -15px; font-size: 35px; opacity: 0.2;">🐬</span>
+                </div>
+
+                <!-- 1. 營業時間與交通區塊 -->
+                <div style="background: #e6fcf5; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #96f2d7;">
+                    <div style="color: #099268; font-weight: 900; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span style="background: #099268; color: white; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px;">🕒</span> 營業時間與交通
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: #444; font-size: 14px;">
+                        <span>營業時間：</span><span style="color: #087f5b; font-weight: 900;">10:00 - 19:30</span>
+                    </div>
+                    <div style="font-size: 12px; color: #888; font-weight: bold; display: flex; align-items: center; gap: 4px;">
+                        <span>📍</span> 搭地鐵南港島線至「海洋公園站」B出口直達
+                    </div>
+                </div>
+
+                <!-- 2. 入園必備區塊 -->
+                <div style="background: #fff; border: 2px dashed #fecdd3; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                    <div style="color: #e11d48; font-weight: 900; font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                        <span>🔥</span> 入園必備準備
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: 900; font-size: 15px; color: #333; margin-bottom: 4px;">📱 下載官方 App <span style="background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; vertical-align: middle; margin-left: 4px; box-shadow: 0 2px 0 #b91c1c;">神級輔助</span></div>
+                        <ul style="margin: 0; padding-left: 24px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                            <li>強烈建議入園馬上抽<strong>「預約通行證 (e-Scheduler)」</strong>，熱門設施免排隊！</li>
+                            <li>可即時查看展館餵食時間與地圖導航。</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div style="font-weight: 900; font-size: 15px; color: #333; margin-bottom: 4px;">🎟️ 電子門票</div>
+                        <ul style="margin: 0; padding-left: 24px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                            <li>務必提前在網路購票，現場掃 QR Code 就能入園，完美避開排隊人潮。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3. 園內交通指南 -->
+                <div style="background: #f0f9ff; border-radius: 15px; padding: 15px; border: 1px solid #bae6fd; margin-bottom: 15px;">
+                    <div style="color: #0369a1; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                        <span>🚠</span> 山下 ↔ 山上交通指南
+                    </div>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #444; line-height: 1.6; font-weight: bold;">
+                        <li style="margin-bottom: 6px;"><strong>登山纜車 (風景美)：</strong>建議<span style="color:#0288d1;">「搭纜車上山」</span>，可俯瞰深水灣無敵海景，是樂園經典標誌！(通常需排隊)</li>
+                        <li><strong>海洋列車 (速度快)：</strong>潛水艇主題的隧道列車，有冷氣且只需 3 分鐘。建議<span style="color:#0288d1;">「搭列車下山」</span>最省時。</li>
+                    </ul>
+                </div>
+
+                <!-- 4. 山下：海濱樂園 -->
+                <div style="background: #fff; border: 2px solid #bce0fd; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 0 #bce0fd;">
+                    <div style="color: #0288d1; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                        <span>🌊</span> 海濱樂園 (山下必看)
+                    </div>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                        <li><strong>海洋奇觀：</strong>名列世界前十大的水族館，擁有超大巨型觀賞屏！</li>
+                        <li><strong>大熊貓之旅：</strong>探訪國寶級熊貓與超可愛的亞洲小爪水獺。</li>
+                        <li><strong>香港老大街：</strong>復古 50-70 年代香港街景，超好拍，還有雞蛋仔等懷舊小吃。</li>
+                    </ul>
+                </div>
+
+                <!-- 5. 山上：高峰樂園 -->
+                <div style="background: #fff; border: 2px solid #e4c1f9; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 0 #e4c1f9;">
+                    <div style="color: #7e22ce; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                        <span>🎢</span> 高峰樂園 (山上必玩)
+                    </div>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                        <li><strong>南極奇觀：</strong>近距離看企鵝家族！<span style="color:#ef4444; background:#fee2e2; padding:1px 4px; border-radius:4px;">注意：館內極度寒冷(約8度)</span>，務必幫孩子帶件薄外套。</li>
+                        <li><strong>動感快車：</strong>全港最瘋狂的雙腳懸空雲霄飛車，腎上腺素飆升！</li>
+                        <li><strong>尋鯊探秘：</strong>360 度環繞步道，觀賞百條鯊魚及魔鬼魚。</li>
+                    </ul>
+                </div>
+
+                <!-- 6. 105cm 兒童設施專區 -->
+                <div style="background: #fff; border: 2px solid #fcd34d; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 0 #fcd34d;">
+                    <div style="color: #d97706; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                        <span>👦</span> 105cm 兒童必玩設施清單
+                    </div>
+                    <div style="background:#fffbeb; padding:8px 12px; border-radius:10px; font-size:13px; color:#b45309; font-weight:bold; margin-bottom:10px; border-left:3px solid #f59e0b;">
+                        105公分的寶貝已經可以解鎖超多設施囉！主攻以下區域：
+                    </div>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                        <li style="margin-bottom: 6px;"><strong>📍 威威天地 (山下兒童區)：</strong>強推<span style="color:#d97706;">「幻彩旋轉馬」</span>(海洋版旋轉木馬)、<span style="color:#d97706;">「昇空奇遇」</span>(摩天輪版熱氣球)，還有超放電的<span style="color:#d97706;">「彈簧跳」</span>(幼童版大怒神，90cm以上即可玩)！</li>
+                        <li style="margin-bottom: 6px;"><strong>📍 冰極天地 (山上區)：</strong>膽子夠大可以挑戰<span style="color:#d97706;">「極地時速」</span>！這是一款小型雲霄飛車 (滿100cm由大人陪同即可乘坐)，速度適中不會太嚇人。</li>
+                        <li><strong>📍 海洋摩天塔 (山上區)：</strong>全家一起搭乘緩緩旋轉升空的觀景塔，吹著冷氣在高空欣賞絕美海景。</li>
+                    </ul>
+                </div>
+
+                <!-- 7. 關閉按鈕 -->
+                <button class="action-btn" style="margin-top: 5px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+                    <span style="font-size: 16px; font-weight: 900;">✖ 關閉攻略</span>
+                </button>
+            `;
+        } else {
+            // 原本的通用排版邏輯，完全不受影響
+            content = `<h3 style="color:var(--primary); margin-top:0; text-align:center; font-size:26px; text-shadow: 2px 2px 0px #d0ebff; letter-spacing:1px;">${name}</h3>`;
+            
+            if (type === 'food') {
+                let infoBlocks = extraInfo.split('<br>').map(line => {
+                    if(!line.trim()) return '';
+                    let bg = '#fff4e6', border = '#ffa94d', color = '#d97706'; // 預設橘色
+                    if (line.includes('🦪')) { bg = '#f4fbff'; border = '#3eb8f2'; color = '#0288d1'; } // 藍色
+                    else if (line.includes('🧂') || line.includes('📍') || line.includes('⚡') || line.includes('💡')) { bg = '#e6fcf5'; border = '#20c997'; color = '#087f5b'; } // 綠色
+
+                    let prefix = (line.includes('🔥') || line.includes('🍳') || line.includes('🦪') || line.includes('🧂') || line.includes('📍') || line.includes('🥛') || line.includes('⚡') || line.includes('💡')) ? '' : '🤤 推薦必吃：';
+
+                    return `<div style="background:${bg}; border:3px solid ${border}; border-radius:16px; padding:12px 15px; margin-bottom:12px; font-weight:bold; color:${color}; text-align:left; box-shadow: 0 4px 0 ${border}; line-height: 1.5; font-size:15px;">
+                        ${prefix}${line}
+                    </div>`;
+                }).join('');
+
+                content += `<div style="margin-top:15px;">${infoBlocks}</div>`;
+            } else if (type === 'spot') {
+                let infoBlocks = extraInfo.split('<br>').map(line => {
+                    let bg = '#fff', border = '#eee', color = '#555';
+                    if (line.includes('🎟️')) { bg = '#fff4e6'; border = '#ffa94d'; color = '#d97706'; }
+                    else if (line.includes('⏰')) { bg = '#f4fbff'; border = '#3eb8f2'; color = '#0288d1'; }
+                    else if (line.includes('必玩') || line.includes('必訪') || line.includes('📸') || line.includes('🏰')) { bg = '#f3e8ff'; border = '#e4c1f9'; color = '#7e22ce'; }
+
+                    return `<div style="background:${bg}; border:3px solid ${border}; border-radius:16px; padding:12px 15px; margin-bottom:12px; font-weight:bold; color:${color}; text-align:left; box-shadow: 0 4px 0 ${border}; line-height: 1.5; font-size:15px;">
+                        ${line}
+                    </div>`;
+                }).join('');
+
+                content += `<div style="margin-top:15px; margin-bottom: 20px;">
+                    ${infoBlocks}
                 </div>`;
-            }).join('');
+                
+                if (mapUrl) {
+                    content += `<a href="${mapUrl}" target="_blank" style="text-decoration:none; display:block;">
+                        <button class="action-btn" style="margin-top:0; justify-content:center; background:#e6fcf5; border-color:#20c997; color:#087f5b; box-shadow: 0 5px 0 #20c997; width: 100%;">
+                            <span style="font-size: 16px;">🗺️ 商場地圖</span>
+                        </button>
+                    </a>`;
+                } else {
+                    content += `<div class="img-placeholder" style="background: repeating-linear-gradient(-45deg, #e6fcf5, #e6fcf5 15px, #f1fdf9 15px, #f1fdf9 30px); border:4px dashed #20c997; color:#087f5b; border-radius: 20px; height: 160px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
+                        <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2s ease-in-out infinite;">🎈</div>
+                        <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #20c997; font-size:14px; box-shadow: 0 3px 0 #20c997;">點我看園區地圖</div>
+                    </div>`;
+                }
+            } else if (type === 'hotel') {
+                let finalHotelImg = hotelImg || 'hotel_room.jpg';
+                content += `<div style="margin-bottom: 20px;">
+                    <div style="background: #f3e8ff; border:4px dashed #d8b4fe; color:#7e22ce; border-radius: 20px; height: 180px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                        <img src="${finalHotelImg}" alt="飯店照片" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div style="display:none; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2.2s ease-in-out infinite;">🏨</div>
+                            <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #d8b4fe; font-size:14px; box-shadow: 0 3px 0 #d8b4fe;">⏳ 請確認檔名：${finalHotelImg}</div>
+                        </div>
+                    </div>
+                </div>`;
 
-            content += `<div style="margin-top:5px;">${infoBlocks}</div>`;
+                let infoBlocks = extraInfo.split('<br>').map(line => {
+                    let bg = '#f4fbff', border = '#3eb8f2', color = '#0288d1'; // 預設天空藍
+                    if (line.includes('🛏️') || line.includes('🕒')) { bg = '#fff4e6'; border = '#ffa94d'; color = '#d97706'; }
+                    else if (line.includes('🌱')) { bg = '#e6fcf5'; border = '#20c997'; color = '#087f5b'; }
+                    else if (line.includes('🔌')) { bg = '#f3e8ff'; border = '#e4c1f9'; color = '#7e22ce'; }
+                    else if (line.includes('📍') || line.includes('🌃')) { bg = '#ffe4e1'; border = '#ffb6c1'; color = '#d87093'; }
+
+                    return `<div style="background:${bg}; border:3px solid ${border}; border-radius:16px; padding:12px 15px; margin-bottom:12px; font-weight:bold; color:${color}; text-align:left; box-shadow: 0 4px 0 ${border}; line-height: 1.5; font-size:15px;">
+                        ${line}
+                    </div>`;
+                }).join('');
+
+                content += `<div style="margin-top:5px;">${infoBlocks}</div>`;
+            } else {
+                content += `<div style="background:#f4fbff; border:3px solid #bce0fd; border-radius:16px; padding:15px; font-weight:bold; line-height:1.6; color:#4a5568;">${extraInfo}</div>`;
+            }
         }
         
         document.getElementById('modal-body').innerHTML = content;
