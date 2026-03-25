@@ -86,36 +86,33 @@
         /* 導覽列 (只有在行程頁面顯示) */
         .nav-tabs {
             display: flex;
-            overflow-x: auto;
-            padding: 10px 15px 15px;
-            white-space: nowrap;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            transition: all 0.3s;
+            padding: 10px 12px 15px;
+            gap: 6px; /* 控制按鈕間距 */
+            width: 100%;
+            justify-content: space-between;
         }
-        .nav-tabs::-webkit-scrollbar { display: none; }
 
         .tab-btn {
-            width: 85px; /* 統一按鈕寬度，讓所有標籤大小一致 */
-            padding: 10px 0; /* 取消左右內距，由寬度統一控制 */
-            display: inline-flex;
+            flex: 1; /* 平分寬度，不用滾動 */
+            min-width: 0; /* 允許縮小以適應手機螢幕 */
+            padding: 6px 0;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            flex-shrink: 0; /* 防止按鈕被擠壓變形 */
-            margin: 0 6px;
-            border: 3px solid #99d6f9;
-            border-radius: 25px;
+            border: 2px solid #99d6f9;
+            border-radius: 12px; /* 稍微方一點以爭取內部空間 */
             background: white;
             cursor: pointer;
-            font-weight: 800;
-            font-size: 15px;
+            font-weight: 900;
             color: #0288d1;
-            box-shadow: 0 4px 0 #99d6f9;
+            box-shadow: 0 3px 0 #99d6f9;
             transition: all 0.1s ease;
+            line-height: 1.2;
         }
 
         .tab-btn:active {
-            transform: translateY(4px);
+            transform: translateY(3px);
             box-shadow: 0 0 0 #99d6f9;
         }
 
@@ -123,7 +120,7 @@
             background: var(--primary);
             color: white;
             border-color: var(--primary);
-            box-shadow: 0 4px 0 #0288d1;
+            box-shadow: 0 3px 0 #0288d1;
         }
 
         /* 主內容區 */
@@ -710,12 +707,12 @@
 
     <!-- 只有在行程模式才會顯示這個 Tabs -->
     <div class="nav-tabs" id="dayTabs">
-        <button class="tab-btn active" onclick="showDay(0)">7/12(日)</button>
-        <button class="tab-btn" onclick="showDay(1)">7/13(一)</button>
-        <button class="tab-btn" onclick="showDay(2)">7/14(二)</button>
-        <button class="tab-btn" onclick="showDay(3)">7/15(三)</button>
-        <button class="tab-btn" onclick="showDay(4)">7/16(四)</button>
-        <button class="tab-btn" onclick="showDay(5)">7/17(五)</button>
+        <button class="tab-btn active" onclick="showDay(0)"><span style="font-size:11px; opacity:0.8; font-weight:bold;">Day 1</span><span style="font-size:13px; margin-top:2px;">7/12</span></button>
+        <button class="tab-btn" onclick="showDay(1)"><span style="font-size:11px; opacity:0.8; font-weight:bold;">Day 2</span><span style="font-size:13px; margin-top:2px;">7/13</span></button>
+        <button class="tab-btn" onclick="showDay(2)"><span style="font-size:11px; opacity:0.8; font-weight:bold;">Day 3</span><span style="font-size:13px; margin-top:2px;">7/14</span></button>
+        <button class="tab-btn" onclick="showDay(3)"><span style="font-size:11px; opacity:0.8; font-weight:bold;">Day 4</span><span style="font-size:13px; margin-top:2px;">7/15</span></button>
+        <button class="tab-btn" onclick="showDay(4)"><span style="font-size:11px; opacity:0.8; font-weight:bold;">Day 5</span><span style="font-size:13px; margin-top:2px;">7/16</span></button>
+        <button class="tab-btn" onclick="showDay(5)"><span style="font-size:11px; opacity:0.8; font-weight:bold;">Day 6</span><span style="font-size:13px; margin-top:2px;">7/17</span></button>
     </div>
 
     <!-- 所有內容都會渲染在這裡 -->
@@ -726,8 +723,8 @@
     <!-- 底部主導覽 -->
     <footer>
         <div class="foot-item active" id="nav-home" onclick="switchMainTab('home')"><span>🏠</span>首頁</div>
-        <div class="foot-item" id="nav-itinerary" onclick="switchMainTab('itinerary')"><span>🗓️</span>行程</div>
         <div class="foot-item" id="nav-flight" onclick="switchMainTab('flight')"><span>✈️</span>航班</div>
+        <div class="foot-item" id="nav-itinerary" onclick="switchMainTab('itinerary')"><span>🗓️</span>行程</div>
         <div class="foot-item" id="nav-mtr" onclick="switchMainTab('mtr')"><span>🚇</span>交通</div>
         <div class="foot-item" id="nav-money" onclick="switchMainTab('money')"><span>💰</span>記帳</div>
         <div class="foot-item" id="nav-pack" onclick="switchMainTab('pack')"><span>🎒</span>行李</div>
@@ -1341,12 +1338,21 @@
                         time: "14:00", 
                         name: "興記煲仔飯", 
                         type: "food", 
-                        mealDetails: "🔥 <strong>正宗炭爐熬煮</strong>：吃到底部焦香『鍋巴』才是靈魂！<br>🍳 <strong>必點推薦</strong>：黃鱔煲仔飯、章魚雞粒煲仔飯、窩蛋牛肉煲仔飯。<br>🦪 <strong>鎮店之寶</strong>：煎蠔餅 (酥脆多汁，建議點小份就很夠吃)。<br>🧂 <strong>吃法秘訣</strong>：上桌先淋上興記『特製甜豉油』，蓋上悶 5 分鐘最美味！<br>📍 <strong>攻略</strong>：位於廟街十九號，周邊有多個分店。外帶(Take-out)有專櫃速度極快。" 
+                        btnText: "餐點介紹", 
+                        customStyle: "hingkee" 
                     },
                     { trans: "散步回飯店", icon: "🚶", duration: "約6分鐘" },
                     { time: "15:30", name: "🏨 城景國際Cityview", info: "辦理入住，進房間放行李稍作休息 🧳" },
                     { trans: "出發逛街 (往南走)", icon: "🚶" },
-                    { time: "16:30", name: "廟街夜市", info: "體驗道地香港街頭氛圍，一路往南逛" },
+                    { 
+                        time: "16:30", 
+                        name: "廟街夜市", 
+                        type: "spot",
+                        btnText: "詳細介紹",
+                        info: "體驗道地香港街頭氛圍，一路往南逛",
+                        spotInfo: "💡 詳細介紹與內容建置中，等您提供網址後馬上排版！",
+                        customStyle: "temple_street"
+                    },
                     { 
                         time: "17:30", 
                         name: "澳洲牛奶公司", 
@@ -1370,7 +1376,8 @@
                         trans: "<div style='display:inline-flex; align-items:flex-end; margin-top:-2px;'><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#e2231a; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>油麻地</span><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; z-index:2;'></div></div><div style='width:18px; height:3.5px; background:#e2231a; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#444; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>金鐘</span><div style='display:flex; z-index:2;'><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; margin-right:-4px; position:relative; z-index:3;'></div><div style='width:5px; height:5px; background:white; border:2.5px solid #059669; border-radius:50%; position:relative; z-index:2;'></div></div></div><div style='width:18px; height:3.5px; background:#059669; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#059669; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>海洋公園</span><div style='width:5px; height:5px; background:white; border:2.5px solid #059669; border-radius:50%; z-index:2;'></div></div></div>", 
                         icon: "🚇", 
                         duration: "約35分",
-                        externalUrl: "https://www.google.com/maps/dir/%E5%9F%8E%E6%99%AF%E5%9C%8B%E9%9A%9B+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E7%AA%A9%E6%89%93%E8%80%81%E9%81%9323%E8%99%9F/%E9%A6%99%E6%B8%AF%E6%B5%B7%E6%B4%8B%E5%85%AC%E5%9C%92+%E9%A6%99%E6%B8%AF%E9%A6%99%E6%B8%AF%E4%BB%94/@22.2797176,114.1320761,13z/am=t/data=!4m14!4m13!1m5!1m1!1s0x340400c130565a83:0x4a91e05e1bdd9b81!2m2!1d114.171644!2d22.313683!1m5!1m1!1s0x34040024320621e1:0xf3d1aa8549fb1946!2m2!1d114.1757239!2d22.2466607!3e3?authuser=0&entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D"
+                        transImgModal: "mtr_map.jpg",
+                        durationUrl: "https://www.google.com/maps/dir/%E5%9F%8E%E6%99%AF%E5%9C%8B%E9%9A%9B+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E7%AA%A9%E6%89%93%E8%80%81%E9%81%9323%E8%99%9F/%E9%A6%99%E6%B8%AF%E6%B5%B7%E6%B4%8B%E5%85%AC%E5%9C%92+%E9%A6%99%E6%B8%AF%E9%A6%99%E6%B8%AF%E4%BB%94/@22.2797176,114.1320761,13z/am=t/data=!4m14!4m13!1m5!1m1!1s0x340400c130565a83:0x4a91e05e1bdd9b81!2m2!1d114.171644!2d22.313683!1m5!1m1!1s0x34040024320621e1:0xf3d1aa8549fb1946!2m2!1d114.1757239!2d22.2466607!3e3?authuser=0&entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D"
                     },
                     { 
                         name: "香港海洋公園", 
@@ -1387,14 +1394,13 @@
             },
             {
                 date: "7/14 (二)",
-                title: "迪士尼魔法世界",
+                title: "行程規劃中 💭",
                 itinerary: [
-                    { name: "🏨 城景國際Cityview", info: "活力滿滿，準備出發！" },
-                    { trans: "搭乘地鐵出發", icon: "🚇" },
-                    { name: "香港迪士尼樂園", type: "spot", spotInfo: "🎟️ 票價：HK$639起 (依日子而定)<br>⏰ 營業時間：10:30 - 20:30<br>🏰 必玩重點：魔雪奇緣世界、夜間城堡煙火秀" },
-                    { trans: "地鐵 迪士尼線", icon: "🏰" },
-                    { name: "金華冰廳", type: "food", menu: "第一名菠蘿油、凍檸茶" },
-                    { trans: "搭車返回飯店", icon: "🚇" },
+                    { name: "🏨 城景國際Cityview", info: "睡到自然醒，迎接未知的一天！" },
+                    { 
+                        name: "✨ 自由活動時間", 
+                        info: "這天的行程還在腦海中醞釀，有任何想去的地方隨時補充進來喔！" 
+                    },
                     { name: "🏨 城景國際Cityview", info: "結束第三天行程，好好休息 🌙" }
                 ]
             },
@@ -1407,11 +1413,14 @@
                         trans: "<div style='display:inline-flex; align-items:flex-end; margin-top:-2px;'><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#e2231a; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>油麻地</span><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; z-index:2;'></div></div><div style='width:18px; height:3.5px; background:#e2231a; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#444; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>荔景</span><div style='display:flex; z-index:2;'><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; margin-right:-4px; position:relative; z-index:3;'></div><div style='width:5px; height:5px; background:white; border:2.5px solid #f38b00; border-radius:50%; position:relative; z-index:2;'></div></div></div><div style='width:18px; height:3.5px; background:#f38b00; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#444; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>欣澳</span><div style='display:flex; z-index:2;'><div style='width:5px; height:5px; background:white; border:2.5px solid #f38b00; border-radius:50%; margin-right:-4px; position:relative; z-index:3;'></div><div style='width:5px; height:5px; background:white; border:2.5px solid #ff69b4; border-radius:50%; position:relative; z-index:2;'></div></div></div><div style='width:18px; height:3.5px; background:#ff69b4; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#ff69b4; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>迪士尼</span><div style='width:5px; height:5px; background:white; border:2.5px solid #ff69b4; border-radius:50%; z-index:2;'></div></div></div>", 
                         icon: "🚇", 
                         duration: "約60分",
-                        externalUrl: "https://www.google.com/maps/dir/%E5%9F%8E%E6%99%AF%E5%9C%8B%E9%9A%9B+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E7%AA%A9%E6%89%93%E8%80%81%E9%81%9323%E8%99%9F/%E9%A6%99%E6%B8%AF%E8%BF%AA%E5%A3%AB%E5%B0%BC%E6%A8%82%E5%9C%92+%E9%A6%99%E6%B8%AF%E5%A4%A7%E5%B6%BC%E5%B1%B1/@22.3268929,114.0234331,12z/am=t/data=!4m14!4m13!1m5!1m1!1s0x340400c130565a83:0x4a91e05e1bdd9b81!2m2!1d114.171644!2d22.313683!1m5!1m1!1s0x3403fc2f53d3953d:0x35b3af6ce4475405!2m2!1d114.0412819!2d22.3129666!3e3?authuser=0&entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D"
+                        transImgModal: "mtr_map.jpg",
+                        durationUrl: "https://www.google.com/maps/dir/%E5%9F%8E%E6%99%AF%E5%9C%8B%E9%9A%9B+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E7%AA%A9%E6%89%93%E8%80%81%E9%81%9323%E8%99%9F/%E9%A6%99%E6%B8%AF%E8%BF%AA%E5%A3%AB%E5%B0%BC%E6%A8%82%E5%9C%92+%E9%A6%99%E6%B8%AF%E5%A4%A7%E5%B6%BC%E5%B1%B1/@22.3268929,114.0234331,12z/am=t/data=!4m14!4m13!1m5!1m1!1s0x340400c130565a83:0x4a91e05e1bdd9b81!2m2!1d114.171644!2d22.313683!1m5!1m1!1s0x3403fc2f53d3953d:0x35b3af6ce4475405!2m2!1d114.0412819!2d22.3129666!3e3?authuser=0&entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D"
                     },
                     { 
                         name: "香港迪士尼樂園", 
                         type: "spot", 
+                        btnText: "遊園攻略",
+                        customStyle: "disneyland",
                         spotInfo: "🎟️ 票價：HK$639起 (依日子而定)<br>⏰ 營業時間：10:30 - 20:30<br>🏰 必玩重點：魔雪奇緣世界、夜間城堡煙火秀" 
                     },
                     { trans: "搭車返回飯店 (迪士尼➔欣澳➔荔景➔油麻地)", icon: "🚇", duration: "約45分" },
@@ -1447,7 +1456,8 @@
                         trans: "<div style='display:inline-flex; align-items:flex-end; margin-top:-2px;'><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#e2231a; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>油麻地</span><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; z-index:2;'></div></div><div style='width:18px; height:3.5px; background:#e2231a; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#444; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>荔景</span><div style='display:flex; z-index:2;'><div style='width:5px; height:5px; background:white; border:2.5px solid #e2231a; border-radius:50%; margin-right:-4px; position:relative; z-index:3;'></div><div style='width:5px; height:5px; background:white; border:2.5px solid #f38b00; border-radius:50%; position:relative; z-index:2;'></div></div></div><div style='width:18px; height:3.5px; background:#f38b00; margin:0 -2px 3.5px -2px; z-index:1;'></div><div style='display:flex; flex-direction:column; align-items:center;'><span style='font-size:10px; color:#f38b00; font-weight:900; line-height:1; margin-bottom:3px; letter-spacing:-0.5px;'>東涌</span><div style='width:5px; height:5px; background:white; border:2.5px solid #f38b00; border-radius:50%; z-index:2;'></div></div></div>", 
                         icon: "🚇", 
                         duration: "約50分",
-                        externalUrl: "https://www.google.com/maps/dir/%E5%9F%8E%E6%99%AF%E5%9C%8B%E9%9A%9B+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E7%AA%A9%E6%89%93%E8%80%81%E9%81%9323%E8%99%9F/%E6%9D%B1%E8%96%88%E5%9F%8E%E5%90%8D%E5%BA%97%E5%80%89+%E9%A6%99%E6%B8%AF%E5%A4%A7%E5%B6%BC%E5%B1%B1%E9%81%94%E6%9D%B1%E8%B7%AF20%E8%99%9F/@22.3237215,113.9775268,12z/am=t/data=!4m14!4m13!1m5!1m1!1s0x340400c130565a83:0x4a91e05e1bdd9b81!2m2!1d114.171644!2d22.313683!1m5!1m1!1s0x3403e3ef3258fa0d:0xe0944b7b63ed2a6f!2m2!1d113.9412938!2d22.289733!3e3?authuser=0&entry=ttu&g_ep=EgoyMDI2MDMxMS4wIKXMDSoASAFQAw%3D%3D"
+                        transImgModal: "mtr_map.jpg",
+                        durationUrl: "https://www.google.com/maps/dir/%E5%9F%8E%E6%99%AF%E5%9C%8B%E9%9A%9B+%E9%A6%99%E6%B8%AF%E6%B2%B9%E9%BA%BB%E5%9C%B0%E7%AA%A9%E6%89%93%E8%80%81%E9%81%9323%E8%99%9F/%E6%9D%B1%E8%96%88%E5%9F%8E%E5%90%8D%E5%BA%97%E5%80%89+%E9%A6%99%E6%B8%AF%E5%A4%A7%E5%B6%BC%E5%B1%B1%E9%81%94%E6%9D%B1%E8%B7%AF20%E8%99%9F/@22.3237215,113.9775268,12z/am=t/data=!4m14!4m13!1m5!1m1!1s0x340400c130565a83:0x4a91e05e1bdd9b81!2m2!1d114.171644!2d22.313683!1m5!1m1!1s0x3403e3ef3258fa0d:0xe0944b7b63ed2a6f!2m2!1d113.9412938!2d22.289733!3e3?authuser=0&entry=ttu&g_ep=EgoyMDI2MDMxMS4wIKXMDSoASAFQAw%3D%3D"
                     },
                     { 
                         time: "10:30",
@@ -1483,7 +1493,14 @@
                         icon: "🚌", 
                         duration: "約25分鐘" 
                     },
-                    { time: "16:25", name: "抵達機場", info: "辦理登機與托運行李" },
+                    { 
+                        time: "16:25", 
+                        name: "抵達機場", 
+                        type: "spot",
+                        btnText: "機場必逛",
+                        info: "辦理登機與托運行李，把握最後採買時光！",
+                        customStyle: "airport_shopping"
+                    },
                     { time: "19:25", name: "✈️ 起飛回台", info: "長榮航空 BR850 返回高雄小港" },
                     { name: "🎉 旅途愉快", info: "平安抵達溫暖的家 🏠" }
                 ]
@@ -1736,7 +1753,7 @@
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px; font-size: 12px; color: #666; font-weight: bold; white-space: nowrap;">
                                 <span>💺 座位：<span style="color:#e85d04;">-</span></span>
-                                <span>🧳 行利：<span style="color:var(--primary);">23公斤</span></span>
+                                <span>🧳 行李：<span style="color:var(--primary);">23公斤</span></span>
                             </div>
                         </div>
                         <div style="padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dotted #ffd8a8;">
@@ -1746,7 +1763,7 @@
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px; font-size: 12px; color: #666; font-weight: bold; white-space: nowrap;">
                                 <span>💺 座位：<span style="color:#e85d04;">-</span></span>
-                                <span>🧳 行利：<span style="color:var(--primary);">23公斤</span></span>
+                                <span>🧳 行李：<span style="color:var(--primary);">23公斤</span></span>
                             </div>
                         </div>
                         <div style="padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;">
@@ -1756,7 +1773,7 @@
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px; font-size: 12px; color: #666; font-weight: bold; white-space: nowrap;">
                                 <span>💺 座位：<span style="color:#e85d04;">-</span></span>
-                                <span>🧳 行利：<span style="color:var(--primary);">23公斤</span></span>
+                                <span>🧳 行李：<span style="color:var(--primary);">23公斤</span></span>
                             </div>
                         </div>
                     </div>
@@ -2220,17 +2237,13 @@
         }
     }
 
-    // 渲染行程日期內容
+    // 渲染行程日期內容 (回復每天獨立顯示)
     function showDay(index) {
         currentDayIndex = index;
         
         // 切換 Tab 樣式
         const btns = document.querySelectorAll('.tab-btn');
         btns.forEach((b, i) => b.classList.toggle('active', i === index));
-        
-        // 自動滾動 Tab
-        const activeBtn = btns[index];
-        if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 
         const content = document.getElementById('content');
         const day = tripData.days[index];
@@ -2242,13 +2255,28 @@
 
         let html = ``;
 
-        html += `<h2 class="day-title">${day.date} ${day.title}</h2>`;
+        // 加上 Day X 標示
+        html += `<h2 class="day-title">Day ${index + 1} ‧ ${day.date} ${day.title}</h2>`;
+        
         day.itinerary.forEach((step, stepIdx) => {
             const isLastItem = stepIdx === day.itinerary.length - 1;
 
             if (step.trans) {
-                let durationHtml = step.duration ? `<span style="font-size:12px; color:#888; font-weight:bold;">⏱️ ${step.duration}</span>` : '';
-                if (step.externalUrl) {
+                let durationHtml = step.duration ? `<span style="font-size:12px; color:#888; font-weight:bold; margin-left:4px;">⏱️ ${step.duration}</span>` : '';
+                
+                // 新增：如果時間有特別設定超連結，把它變成一顆橘色的小按鈕
+                if (step.durationUrl) {
+                    durationHtml = `<a href="${step.durationUrl}" target="_blank" style="text-decoration:none;"><div class="mini-btn" style="background:#fff4e6; border-color:#ffa94d; color:#d97706; margin-top:0; margin-left:4px; box-shadow: 0 3px 0 #ffa94d;">⏱️ ${step.duration} 🗺️</div></a>`;
+                }
+
+                if (step.transImgModal) {
+                    html += `<div class="transport" style="flex-wrap: wrap; gap: 6px;">
+                        <div class="mini-btn" style="background:#e6f2fa; border-color:#99d6f9; color:#0288d1; margin-top:0;" onclick="openDetailModal('', 'pure_img', '${step.transImgModal}', '', '', '')">
+                            <span>${step.icon}</span> ${step.trans} <span style="font-size:13px; margin-left:2px;">👆</span>
+                        </div>
+                        ${durationHtml}
+                    </div>`;
+                } else if (step.externalUrl) {
                         html += `<div class="transport" style="flex-wrap: wrap; gap: 6px;">
                             <a href="${step.externalUrl}" target="_blank" style="text-decoration:none;">
                                 <div class="mini-btn" style="background:#e6f2fa; border-color:#99d6f9; color:#0288d1; margin-top:0;">
@@ -2276,26 +2304,23 @@
                         btnHtml = `<button class="mini-btn" onclick="openTripDetailModal(${index}, ${stepIdx})">
                             🏠 住宿資訊 <span style="font-size:13px;">✨</span>
                         </button>`;
-                    } else if (step.type === 'spot') {
-                        // 景點資訊專屬的迷你可愛按鈕
-                        let btnText = step.btnText || '景點資訊';
-                        btnHtml = `<button class="mini-btn" style="background:#e6fcf5; border-color:#96f2d7; color:#087f5b; box-shadow: 0 3px 0 #96f2d7;" onclick="openTripDetailModal(${index}, ${stepIdx})">
-                            🎡 ${btnText} <span style="font-size:13px;">✨</span>
+                    } else if (step.type === 'spot' || step.type === 'food' || step.btnText) {
+                        let btnText = step.btnText || (step.type === 'food' ? '餐點介紹' : '詳細介紹');
+                        let btnIcon = step.type === 'food' ? '🥣' : (step.type === 'spot' ? '🎡' : '✨');
+                        
+                        // 統一使用興記煲仔飯的「橘色暖爐」風格按鈕
+                        btnHtml = `<button class="mini-btn" style="background:#fff4e6; border-color:#ffa94d; color:#d97706; box-shadow: 0 3px 0 #ffa94d;" onclick="openTripDetailModal(${index}, ${stepIdx})">
+                            ${btnIcon} ${btnText} <span style="font-size:13px;">✨</span>
                         </button>`;
 
                         // 如果有行李寄放櫃的連結，則在旁邊動態加上專屬按鈕
                         if (step.lockerUrl) {
-                            btnHtml += `<a href="${step.lockerUrl}" target="_blank" style="text-decoration:none; display:inline-block;">
+                            btnHtml += `<a href="${step.lockerUrl}" target="_blank" style="text-decoration:none; display:inline-block; margin-left:6px;">
                                 <button class="mini-btn" style="background:#f4fbff; border-color:#99d6f9; color:#0288d1; box-shadow: 0 3px 0 #99d6f9;">
                                     🧳 行李寄放 <span style="font-size:13px;">🔗</span>
                                 </button>
                             </a>`;
                         }
-                    } else if (step.type === 'food') {
-                        // 美食按鈕調整為 mini-btn 樣式
-                        btnHtml = `<button class="mini-btn" style="background:#fff4e6; border-color:#ffa94d; color:#d97706; box-shadow: 0 3px 0 #ffa94d;" onclick="openTripDetailModal(${index}, ${stepIdx})">
-                            🥣 餐點介紹 <span style="font-size:13px;">✨</span>
-                        </button>`;
                     }
 
                     // 檢查是否有訂房憑證的圖檔設定
@@ -2371,7 +2396,178 @@
     function openDetailModal(name, type, extraInfo, mapUrl, hotelImg, customStyle) {
         let content = '';
 
-        if (customStyle === 'ngongping') {
+        if (type === 'trans') {
+             content = `
+                <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid var(--primary); text-align: center;">
+                    <h3 style="color: #333; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">${name}</h3>
+                    <span style="position: absolute; right: 0px; top: -15px; font-size: 35px; opacity: 0.2;">🚌</span>
+                </div>
+                ${extraInfo}
+                <button class="action-btn" style="margin-top: 5px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+                    <span style="font-size: 16px; font-weight: 900;">✖ 關閉資訊</span>
+                </button>
+            `;
+        } else if (type === 'pure_img') {
+            // 極簡圖片模式：只單純顯示圖片，無標題與底部按鈕
+            content = `
+                <img src="${extraInfo}" style="width:100%; display:block; border-radius:15px;" onerror="this.onerror=null; this.parentNode.innerHTML='<div style=\\'text-align:center; padding:40px 20px; color:#888; font-weight:bold; border:2px dashed #ccc; border-radius:15px;\\'>⚠️ 港鐵路線圖尚未上傳<br><span style=\\'font-size:12px;\\'>請放置檔案：${extraInfo}</span></div>';">
+            `;
+        } else if (type === 'img') {
+             content = `
+                <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid var(--purple); text-align: center;">
+                    <h3 style="color: #333; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">${name}</h3>
+                </div>
+
+                <!-- 1. 正宗吃法區塊 -->
+                <div style="background: #fff8f0; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #ffedd5;">
+                    <div style="color: #c2410c; font-weight: 900; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span style="background: #c2410c; color: white; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px;">🧂</span> 靈魂吃法秘訣
+                    </div>
+                    <div style="background: white; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: bold; color: #444; line-height: 1.6; border-left: 4px solid #ffa94d;">
+                        1. 掀蓋後淋上興記「特製甜豉油」<br>
+                        2. 迅速蓋上悶 <strong>5 分鐘</strong>，米飯更入味<br>
+                        3. 底部焦香的<strong>「鍋巴」</strong>才是精華！
+                    </div>
+                </div>
+
+                <!-- 2. 必點清單 -->
+                <div style="background: #fff; border: 2px dashed #fecdd3; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                    <div style="color: #e11d48; font-weight: 900; font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                        <span>🤤</span> 推薦必點菜單
+                    </div>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <div style="font-weight: 900; font-size: 15px; color: #333;">🦪 煎蠔餅 (必點！)</div>
+                        <p style="margin: 4px 0 0; font-size: 13px; color: #666; font-weight: bold;">外皮酥脆多汁，建議點小份分食。</p>
+                    </div>
+
+                    <div style="margin-bottom: 5px;">
+                        <div style="font-weight: 900; font-size: 15px; color: #333;">🥘 經典煲仔飯系列</div>
+                        <ul style="margin: 5px 0 0; padding-left: 24px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                            <li>黃鱔煲仔飯 (招牌)</li>
+                            <li>窩蛋牛肉煲仔飯 (口感滑順)</li>
+                            <li>章魚雞粒煲仔飯</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3. 攻略區塊 -->
+                <div style="background: #f0f9ff; border-radius: 15px; padding: 15px; border: 1px solid #bae6fd; margin-bottom: 15px;">
+                    <div style="color: #0369a1; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                        <span>📍</span> 排隊攻略與位置
+                    </div>
+                    <div style="background: white; border-radius: 10px; padding: 10px; font-size: 13px; font-weight: bold; color: #444; line-height: 1.5;">
+                        位於<strong>廟街十九號</strong>，周邊有多家分店。若內用人潮太多，可考慮使用<strong>外帶(Take-out)</strong>專櫃，速度較快。
+                    </div>
+                </div>
+
+                <button class="action-btn" style="margin-top: 5px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+                    <span style="font-size: 16px; font-weight: 900;">✖ 關閉攻略</span>
+                </button>
+            `;
+        } else if (customStyle === 'temple_street') {
+            // 專屬：廟街夜市的橘色排版風格 (新增)
+            content = `
+                <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid #ffa94d; text-align: center;">
+                    <h3 style="color: #333; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">🏮 廟街夜市 全攻略</h3>
+                    <span style="position: absolute; right: 0px; top: -15px; font-size: 35px; opacity: 0.2;">✨</span>
+                </div>
+
+                <!-- 1. 簡介與重點 (橘色風) -->
+                <div style="background: #fff8f0; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #ffedd5;">
+                    <div style="color: #c2410c; font-weight: 900; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span style="background: #c2410c; color: white; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px;">📝</span> 簡介與重點
+                    </div>
+                    <div style="background: white; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: bold; color: #444; line-height: 1.6; border-left: 4px solid #ffa94d;">
+                        香港最具代表性的平民夜市，無數經典港片取景地！從佐敦一路延伸到油麻地，充滿濃濃老香港的煙火氣。越夜越美麗，約 20:00 後最熱鬧。
+                    </div>
+                </div>
+
+                <!-- 2. 細節清單 (粉色虛線風) -->
+                <div style="background: #fff; border: 2px dashed #fecdd3; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                    <div style="color: #e11d48; font-weight: 900; font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                        <span>📌</span> 推薦必逛 / 必吃
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #555; line-height: 1.7; font-weight: bold;">
+                            <li><b style="color:#333;">📸 南北牌坊：</b>佐敦與油麻地兩端都有傳統中式牌坊，打卡必拍。</li>
+                            <li><b style="color:#333;">🦀 大排檔美食：</b>除了興記，還有堂記腸粉、廟街牛什與香辣避風塘炒蟹。</li>
+                            <li><b style="color:#333;">🔮 算命一條街：</b>天后廟旁聚集了塔羅、看相、鳥卦等特色攤位。</li>
+                            <li><b style="color:#333;">🛍️ 平價尋寶：</b>各式古董、玉器與特色紀念品。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3. 攻略區塊 (水藍色風) -->
+                <div style="background: #f0f9ff; border-radius: 15px; padding: 15px; border: 1px solid #bae6fd; margin-bottom: 15px;">
+                    <div style="color: #0369a1; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                        <span>⚠️</span> 防雷與逛街攻略
+                    </div>
+                    <div style="background: white; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: bold; color: #555; line-height: 1.6;">
+                        <ul style="margin: 0; padding-left: 18px;">
+                            <li><span style="color:#e85d04;">海鮮計價：</span>吃「時價」海鮮前，<b>務必先問清楚總價</b>，避免結帳糾紛！</li>
+                            <li><span style="color:#e85d04;">購物殺價：</span>攤販商品水分較高，看到喜歡的記得大膽殺價 (可從7-8折喊起)。</li>
+                            <li><span style="color:#e85d04;">拍照禮儀：</span>算命攤若要近距離拍照，建議先徵求同意以免不愉快。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button class="action-btn" style="margin-top: 5px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+                    <span style="font-size: 16px; font-weight: 900;">✖ 關閉攻略</span>
+                </button>
+            `;
+        } else if (customStyle === 'airport_shopping') {
+            // 專屬：香港機場最後血拼的橘色排版風格
+            content = `
+                <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid #ffa94d; text-align: center;">
+                    <h3 style="color: #333; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">✈️ 機場必逛 全攻略</h3>
+                    <span style="position: absolute; right: 0px; top: -15px; font-size: 35px; opacity: 0.2;">🛍️</span>
+                </div>
+
+                <!-- 1. 簡介與重點 (橘色風) -->
+                <div style="background: #fff8f0; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #ffedd5;">
+                    <div style="color: #c2410c; font-weight: 900; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span style="background: #c2410c; color: white; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px;">📝</span> 簡介與重點
+                    </div>
+                    <div style="background: white; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: bold; color: #444; line-height: 1.6; border-left: 4px solid #ffa94d;">
+                        香港國際機場超好買！這份攻略將為您整理離港前最後的必買清單與必逛重點。
+                    </div>
+                </div>
+
+                <!-- 2. 細節清單 (粉色虛線風) -->
+                <div style="background: #fff; border: 2px dashed #fecdd3; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                    <div style="color: #e11d48; font-weight: 900; font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                        <span>📌</span> 推薦必逛 / 必買
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #555; line-height: 1.7; font-weight: bold;">
+                            <li style="margin-bottom: 10px;">
+                                <b style="color:#333; font-size:14px;">✈️ 天際走廊 (透明空橋看飛機)</b><br>
+                                <span style="color:#e85d04;">📍 怎麼去：</span>過海關後，往 <b>13-22號登機門</b> 方向走即可到達。<br>
+                                <span style="color:#888;">💡 亮點：</span>腳底有一部分是透明玻璃，可以帶小朋友近距離看飛機從腳下穿過，拍照超壯觀！
+                            </li>
+                            <li><b style="color:#999;">(其他必買資料準備中...)</b></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3. 攻略區塊 (水藍色風) -->
+                <div style="background: #f0f9ff; border-radius: 15px; padding: 15px; border: 1px solid #bae6fd; margin-bottom: 15px;">
+                    <div style="color: #0369a1; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                        <span>⚠️</span> 登機與採買攻略
+                    </div>
+                    <div style="background: white; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: bold; color: #555; line-height: 1.6;">
+                        <ul style="margin: 0; padding-left: 18px;">
+                            <li><span style="color:#e85d04;">時間提醒：</span>(資料準備中...)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button class="action-btn" style="margin-top: 5px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+                    <span style="font-size: 16px; font-weight: 900;">✖ 關閉攻略</span>
+                </button>
+            `;
+        } else if (customStyle === 'ngongping') {
             // 專屬：昂坪360纜車的韓國排版風格
             content = `
                 <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid #ffa94d; text-align: center;">
@@ -2595,81 +2791,170 @@
                     <span style="font-size: 16px; font-weight: 900;">✖ 關閉攻略</span>
                 </button>
             `;
-        } else {
-            // 原本的通用排版邏輯，完全不受影響
-            content = `<h3 style="color:var(--primary); margin-top:0; text-align:center; font-size:26px; text-shadow: 2px 2px 0px #d0ebff; letter-spacing:1px;">${name}</h3>`;
-            
-            if (type === 'food') {
-                let infoBlocks = extraInfo.split('<br>').map(line => {
-                    if(!line.trim()) return '';
-                    let bg = '#fff4e6', border = '#ffa94d', color = '#d97706'; // 預設橘色
-                    if (line.includes('🦪')) { bg = '#f4fbff'; border = '#3eb8f2'; color = '#0288d1'; } // 藍色
-                    else if (line.includes('🧂') || line.includes('📍') || line.includes('⚡') || line.includes('💡')) { bg = '#e6fcf5'; border = '#20c997'; color = '#087f5b'; } // 綠色
+        } else if (customStyle === 'disneyland') {
+            // 專屬：香港迪士尼樂園的超詳細攻略排版
+            content = `
+                <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid #9b5de5; text-align: center;">
+                    <h3 style="color: #333; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">🏰 迪士尼樂園 全攻略</h3>
+                    <span style="position: absolute; right: 0px; top: -15px; font-size: 35px; opacity: 0.2;">✨</span>
+                </div>
 
-                    let prefix = (line.includes('🔥') || line.includes('🍳') || line.includes('🦪') || line.includes('🧂') || line.includes('📍') || line.includes('🥛') || line.includes('⚡') || line.includes('💡')) ? '' : '🤤 推薦必吃：';
-
-                    return `<div style="background:${bg}; border:3px solid ${border}; border-radius:16px; padding:12px 15px; margin-bottom:12px; font-weight:bold; color:${color}; text-align:left; box-shadow: 0 4px 0 ${border}; line-height: 1.5; font-size:15px;">
-                        ${prefix}${line}
-                    </div>`;
-                }).join('');
-
-                content += `<div style="margin-top:15px;">${infoBlocks}</div>`;
-            } else if (type === 'spot') {
-                let infoBlocks = extraInfo.split('<br>').map(line => {
-                    let bg = '#fff', border = '#eee', color = '#555';
-                    if (line.includes('🎟️')) { bg = '#fff4e6'; border = '#ffa94d'; color = '#d97706'; }
-                    else if (line.includes('⏰')) { bg = '#f4fbff'; border = '#3eb8f2'; color = '#0288d1'; }
-                    else if (line.includes('必玩') || line.includes('必訪') || line.includes('📸') || line.includes('🏰')) { bg = '#f3e8ff'; border = '#e4c1f9'; color = '#7e22ce'; }
-
-                    return `<div style="background:${bg}; border:3px solid ${border}; border-radius:16px; padding:12px 15px; margin-bottom:12px; font-weight:bold; color:${color}; text-align:left; box-shadow: 0 4px 0 ${border}; line-height: 1.5; font-size:15px;">
-                        ${line}
-                    </div>`;
-                }).join('');
-
-                content += `<div style="margin-top:15px; margin-bottom: 20px;">
-                    ${infoBlocks}
-                </div>`;
-                
-                if (mapUrl) {
-                    content += `<a href="${mapUrl}" target="_blank" style="text-decoration:none; display:block;">
-                        <button class="action-btn" style="margin-top:0; justify-content:center; background:#e6fcf5; border-color:#20c997; color:#087f5b; box-shadow: 0 5px 0 #20c997; width: 100%;">
-                            <span style="font-size: 16px;">🗺️ 商場地圖</span>
-                        </button>
-                    </a>`;
-                } else {
-                    content += `<div class="img-placeholder" style="background: repeating-linear-gradient(-45deg, #e6fcf5, #e6fcf5 15px, #f1fdf9 15px, #f1fdf9 30px); border:4px dashed #20c997; color:#087f5b; border-radius: 20px; height: 160px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
-                        <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2s ease-in-out infinite;">🎈</div>
-                        <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #20c997; font-size:14px; box-shadow: 0 3px 0 #20c997;">點我看園區地圖</div>
-                    </div>`;
-                }
-            } else if (type === 'hotel') {
-                let finalHotelImg = hotelImg || 'hotel_room.jpg';
-                content += `<div style="margin-bottom: 20px;">
-                    <div style="background: #f3e8ff; border:4px dashed #d8b4fe; color:#7e22ce; border-radius: 20px; height: 180px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                        <img src="${finalHotelImg}" alt="飯店照片" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div style="display:none; flex-direction: column; align-items: center; justify-content: center;">
-                            <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2.2s ease-in-out infinite;">🏨</div>
-                            <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #d8b4fe; font-size:14px; box-shadow: 0 3px 0 #d8b4fe;">⏳ 請確認檔名：${finalHotelImg}</div>
-                        </div>
+                <!-- 1. 105公分小孩 專屬設施挑戰表 -->
+                <div style="background: #fffbeb; border: 2px solid #fcd34d; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 0 #fcd34d;">
+                    <div style="color: #d97706; font-weight: 900; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span>👦</span> 105cm 設施挑戰表
                     </div>
+                    
+                    <div style="background: white; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: bold; line-height: 1.6;">
+                        <div style="color:#059669; margin-bottom:6px;">✅ <span style="background:#dcfce7; padding:2px 6px; border-radius:4px;">全部通關 (已滿102cm)</span></div>
+                        <ul style="margin:0; padding-left:18px; color:#4b5563;">
+                            <li><strong>魔雪奇緣世界</strong>：雪嶺滑雪橇 (95cm)</li>
+                            <li><strong>明日世界</strong>：星戰極速穿梭 (102cm)</li>
+                            <li><strong>明日世界</strong>：鐵甲奇俠飛行之旅 (102cm)</li>
+                            <li><strong>灰熊山谷</strong>：灰熊山極速礦車 (95cm)</li>
+                            <li><strong>反斗奇兵</strong>：玩具兵團跳降傘 (81cm)</li>
+                        </ul>
+                        
+                        <hr style="border:0; border-top:1px dashed #ddd; margin:12px 0;">
+                        
+                        <div style="color:#ef4444; margin-bottom:6px;">❌ <span style="background:#fee2e2; padding:2px 6px; border-radius:4px;">還不能玩 (需120cm)</span></div>
+                        <ul style="margin:0; padding-left:18px; color:#9ca3af;">
+                            <li><strong>沖天遙控車</strong> (RC Racer)：差15公分</li>
+                        </ul>
+
+                        <div style="margin-top:10px; font-size:11px; color:#888; font-style:italic;">*其餘如「迷離大宅」、「蟻俠」、「小小世界」皆無身高限制，皆可放心遊玩。</div>
+                    </div>
+                </div>
+
+                <!-- 2. 入園必備區塊 -->
+                <div style="background: #fff; border: 2px dashed #fecdd3; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                    <div style="color: #e11d48; font-weight: 900; font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                        <span>🔥</span> 入園必備準備
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: 900; font-size: 15px; color: #333; margin-bottom: 4px;">📱 迪士尼官方 App <span style="background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; vertical-align: middle; margin-left: 4px; box-shadow: 0 2px 0 #b91c1c;">必裝</span></div>
+                        <ul style="margin: 0; padding-left: 24px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                            <li>即時查看各設施排隊時間、遊行時刻表與角色見面的地點。</li>
+                            <li>入園後馬上綁定門票，搶抽<strong>「預約等候卡 (Standby Pass)」</strong>，節省排隊時間。</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div style="font-weight: 900; font-size: 15px; color: #333; margin-bottom: 4px;">🎟️ 電子門票與安檢</div>
+                        <ul style="margin: 0; padding-left: 24px; font-size: 13px; color: #555; line-height: 1.6; font-weight: bold;">
+                            <li>出示 QR Code 掃碼即可入園。<span style="color:#ef4444;">注意：入園會嚴格安檢，禁止攜帶外食（可以帶水或空水壺裝水）。</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3. 夜間重頭戲 -->
+                <div style="background: #1e293b; border: 2px solid #334155; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 0 #0f172a;">
+                    <div style="color: #fbbf24; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                        <span>🎇</span> 夜間重頭戲：星夢光影之旅
+                    </div>
+                    <div style="background:#334155; padding:8px 12px; border-radius:10px; font-size:13px; color:#f8fafc; font-weight:bold; margin-bottom:10px; border-left:3px solid #fbbf24; line-height:1.6;">
+                        這是迪士尼目前最頂級的夜間城堡煙火秀！結合水舞、燈光、雷射與經典音樂，震撼到會起雞皮疙瘩！
+                    </div>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #cbd5e1; line-height: 1.6; font-weight: bold;">
+                        <li style="margin-bottom: 4px;"><strong>演出時間：</strong>通常為閉園前 (約 20:30 或 21:00，請依 App 顯示為準)。</li>
+                        <li><strong>最佳觀賞點：</strong>美國小鎮大街靠近城堡的廣場，建議提早 45-60 分鐘卡位。</li>
+                    </ul>
+                </div>
+
+                <!-- 4. 關閉按鈕 -->
+                <button class="action-btn" style="margin-top: 5px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+                    <span style="font-size: 16px; font-weight: 900;">✖ 關閉攻略</span>
+                </button>
+            `;
+        } else if (type === 'hotel') {
+            // 飯店專屬排版邏輯
+            content = `<h3 style="color:var(--primary); margin-top:0; text-align:center; font-size:26px; text-shadow: 2px 2px 0px #d0ebff; letter-spacing:1px;">${name}</h3>`;
+            let finalHotelImg = hotelImg || 'hotel_room.jpg';
+            content += `<div style="margin-bottom: 20px;">
+                <div style="background: #f3e8ff; border:4px dashed #d8b4fe; color:#7e22ce; border-radius: 20px; height: 180px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                    <img src="${finalHotelImg}" alt="飯店照片" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div style="display:none; flex-direction: column; align-items: center; justify-content: center;">
+                        <div style="font-size:45px; margin-bottom:10px; display:inline-block; animation: float 2.2s ease-in-out infinite;">🏨</div>
+                        <div style="background:white; padding:6px 15px; border-radius:20px; border:2px solid #d8b4fe; font-size:14px; box-shadow: 0 3px 0 #d8b4fe;">⏳ 請確認檔名：${finalHotelImg}</div>
+                    </div>
+                </div>
+            </div>`;
+
+            let infoBlocks = extraInfo.split('<br>').map(line => {
+                let bg = '#f4fbff', border = '#3eb8f2', color = '#0288d1';
+                if (line.includes('🛏️') || line.includes('🕒')) { bg = '#fff4e6'; border = '#ffa94d'; color = '#d97706'; }
+                else if (line.includes('🌱')) { bg = '#e6fcf5'; border = '#20c997'; color = '#087f5b'; }
+                else if (line.includes('🔌')) { bg = '#f3e8ff'; border = '#e4c1f9'; color = '#7e22ce'; }
+                else if (line.includes('📍') || line.includes('🌃')) { bg = '#ffe4e1'; border = '#ffb6c1'; color = '#d87093'; }
+
+                return `<div style="background:${bg}; border:3px solid ${border}; border-radius:16px; padding:12px 15px; margin-bottom:12px; font-weight:bold; color:${color}; text-align:left; box-shadow: 0 4px 0 ${border}; line-height: 1.5; font-size:15px;">
+                    ${line}
                 </div>`;
+            }).join('');
 
-                let infoBlocks = extraInfo.split('<br>').map(line => {
-                    let bg = '#f4fbff', border = '#3eb8f2', color = '#0288d1'; // 預設天空藍
-                    if (line.includes('🛏️') || line.includes('🕒')) { bg = '#fff4e6'; border = '#ffa94d'; color = '#d97706'; }
-                    else if (line.includes('🌱')) { bg = '#e6fcf5'; border = '#20c997'; color = '#087f5b'; }
-                    else if (line.includes('🔌')) { bg = '#f3e8ff'; border = '#e4c1f9'; color = '#7e22ce'; }
-                    else if (line.includes('📍') || line.includes('🌃')) { bg = '#ffe4e1'; border = '#ffb6c1'; color = '#d87093'; }
+            content += `<div style="margin-top:5px;">${infoBlocks}</div>
+            <button class="action-btn" style="margin-top: 5px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+                <span style="font-size: 16px; font-weight: 900;">✖ 關閉資訊</span>
+            </button>`;
+        } else {
+            // 全新通用預設風格 (繼承興記煲仔飯的橘色三區塊版型)
+            let icon = type === 'food' ? '🍳' : (type === 'spot' ? '✨' : '💡');
+            let titlePrefix = type === 'food' ? '🔥' : '📍';
+            let parsedExtraInfo = extraInfo || '💡 內容建置中，等您提供網址後馬上排版！';
+            
+            content = `
+                <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid #ffa94d; text-align: center;">
+                    <h3 style="color: #333; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">${titlePrefix} ${name}</h3>
+                    <span style="position: absolute; right: 0px; top: -15px; font-size: 35px; opacity: 0.2;">${icon}</span>
+                </div>
 
-                    return `<div style="background:${bg}; border:3px solid ${border}; border-radius:16px; padding:12px 15px; margin-bottom:12px; font-weight:bold; color:${color}; text-align:left; box-shadow: 0 4px 0 ${border}; line-height: 1.5; font-size:15px;">
-                        ${line}
-                    </div>`;
-                }).join('');
+                <!-- 1. 簡介與重點 (橘色風) -->
+                <div style="background: #fff8f0; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #ffedd5;">
+                    <div style="color: #c2410c; font-weight: 900; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span style="background: #c2410c; color: white; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px;">📝</span> 簡介與重點
+                    </div>
+                    <div style="background: white; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: bold; color: #444; line-height: 1.6; border-left: 4px solid #ffa94d;">
+                        ${parsedExtraInfo}
+                    </div>
+                </div>
 
-                content += `<div style="margin-top:5px;">${infoBlocks}</div>`;
-            } else {
-                content += `<div style="background:#f4fbff; border:3px solid #bce0fd; border-radius:16px; padding:15px; font-weight:bold; line-height:1.6; color:#4a5568;">${extraInfo}</div>`;
+                <!-- 2. 細節清單 (粉色虛線風) -->
+                <div style="background: #fff; border: 2px dashed #fecdd3; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                    <div style="color: #e11d48; font-weight: 900; font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                        <span>📌</span> 推薦必看 / 必點
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <div style="font-weight: 900; font-size: 14px; color: #888;">( 待您提供詳細資料，我們隨時為您排版補上！ )</div>
+                    </div>
+                </div>
+
+                <!-- 3. 攻略區塊 (水藍色風) -->
+                <div style="background: #f0f9ff; border-radius: 15px; padding: 15px; border: 1px solid #bae6fd; margin-bottom: 15px;">
+                    <div style="color: #0369a1; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                        <span>📍</span> 排隊與位置攻略
+                    </div>
+                    <div style="background: white; border-radius: 10px; padding: 10px; font-size: 13px; font-weight: bold; color: #888; line-height: 1.5;">
+                        ( 相關交通、排隊小貼士會整理在這裡喔！ )
+                    </div>
+                </div>
+            `;
+
+            if (mapUrl) {
+                content += `
+                    <a href="${mapUrl}" target="_blank" style="text-decoration:none; display:block;">
+                        <button class="action-btn" style="margin-top:0; margin-bottom:15px; justify-content:center; background:#e6fcf5; border-color:#20c997; color:#087f5b; box-shadow: 0 5px 0 #20c997; width: 100%;">
+                            <span style="font-size: 16px;">🗺️ 開啟地圖與位置</span>
+                        </button>
+                    </a>
+                `;
             }
+
+            content += `
+                <button class="action-btn" style="margin-top: 5px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+                    <span style="font-size: 16px; font-weight: 900;">✖ 關閉攻略</span>
+                </button>
+            `;
         }
         
         document.getElementById('modal-body').innerHTML = content;
@@ -2687,7 +2972,18 @@
 
     // 初始化載入
     window.onload = () => {
-        switchMainTab('home');
+        const today = new Date();
+        const y = today.getFullYear();
+        const m = today.getMonth() + 1; // JavaScript 月份是 0-11，所以要 +1
+        const d = today.getDate();
+
+        // 智慧偵測：判斷是否在行程期間 (2026/7/12 - 2026/7/17)
+        if (y === 2026 && m === 7 && d >= 12 && d <= 17) {
+            currentDayIndex = d - 12; // 自動對應到 Day 1 ~ Day 6 (陣列索引 0~5)
+            switchMainTab('itinerary'); // 跳轉到行程頁面
+        } else {
+            switchMainTab('home'); // 行程期間外 (出發前/回國後)，預設顯示首頁
+        }
     };
 </script>
 </body>
