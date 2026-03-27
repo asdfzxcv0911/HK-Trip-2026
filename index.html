@@ -1268,7 +1268,8 @@
         let totalHKD = 0;
         let totalTWD = 0;
 
-        const catIcons = { 'food': '🍔', 'trans': '🚇', 'shop': '🛍️', 'ticket': '🎟️', 'other': '🌟' };
+        // 在這裡加入 hotel 的圖示！
+        const catIcons = { 'food': '🍔', 'trans': '🚇', 'shop': '🛍️', 'ticket': '🎟️', 'hotel': '🏨', 'other': '🌟' };
 
         expenses.forEach(exp => {
             // 兼容舊資料：如果沒有幣別設定，預設為 HKD
@@ -1942,6 +1943,7 @@
                                 <option value="trans">🚇 交通</option>
                                 <option value="shop">🛍️ 購物</option>
                                 <option value="ticket">🎟️ 門票</option>
+                                <option value="hotel">🏨 住宿</option>
                                 <option value="other">🌟 其他</option>
                             </select>
                             <select id="exp-currency" style="width: 80px; flex: none; text-align: center; padding-left: 5px; padding-right: 5px;">
