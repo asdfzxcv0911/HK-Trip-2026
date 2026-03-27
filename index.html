@@ -171,14 +171,18 @@
             color: #d97706;
             background: var(--yellow);
             display: inline-block;
-            padding: 6px 15px;
+            padding: 5px 12px;
             border-radius: 15px;
             margin-top: 0;
             margin-bottom: 15px;
-            font-size: 20px; /* 配合手寫體稍微放大 */
+            font-size: 16px; /* 縮小字體以適應手機單行顯示 */
             font-weight: 900;
             border: 2px solid #facc15;
             font-family: 'Hannotate TC', 'HanziPen TC', 'Wawati TC', 'Chalkboard SE', 'Comic Sans MS', 'LXGW WenKai TC', cursive;
+            white-space: nowrap; /* 強制不換行 */
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis; /* 如果螢幕真的太小，字尾會自動變成... */
         }
 
         /* 動作按鈕 (立體果凍感) */
@@ -627,7 +631,7 @@
         /* 首頁子分頁按鈕 */
         .home-tabs-container {
             display: flex;
-            gap: 10px;
+            gap: 6px; /* 縮小按鈕間距 */
             margin-bottom: 20px;
             overflow-x: auto;
             padding-bottom: 5px;
@@ -637,24 +641,25 @@
         
         .home-sub-btn {
             flex: 1;
-            min-width: 80px;
-            padding: 12px 5px;
-            border-radius: 18px;
+            min-width: 0; /* 解除原本的寬度限制，讓按鈕可以變窄 */
+            padding: 8px 2px; /* 縮小上下左右的留白 */
+            border-radius: 15px; /* 按鈕稍微變小，圓角也跟著微調 */
             border: 2px solid var(--primary);
             background: white;
             color: var(--primary);
             font-weight: 900;
-            font-size: 14px;
+            font-size: 12px; /* 縮小字體以適應單行 */
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
-            box-shadow: 0 4px 0 #bce0fd;
+            box-shadow: 0 3px 0 #bce0fd;
+            white-space: nowrap; /* 強制文字不換行 */
         }
         .home-sub-btn.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
-            box-shadow: 0 4px 0 #0288d1;
+            box-shadow: 0 3px 0 #0288d1;
             transform: translateY(-2px);
         }
 
@@ -746,6 +751,7 @@
     let currentDayIndex = 0;
 
     // 記帳資料 (儲存於 LocalStorage，不怕關掉網頁不見)
+    // 更新：加入 currency 欄位支援台幣紀錄
     let expenses = JSON.parse(localStorage.getItem('hkTripExpenses')) || [];
 
     // 待辦資料 (加上了分類圖示，同類型的票券會排在一起)
@@ -1212,19 +1218,38 @@
         const desc = document.getElementById('exp-desc').value.trim();
         const amount = parseFloat(document.getElementById('exp-amount').value);
         const cat = document.getElementById('exp-cat').value;
+        const currency = document.getElementById('exp-currency').value;
 
         if (!desc || isNaN(amount) || amount <= 0) {
             openModal('⚠️ 哎呀！', '請輸入有效的花費項目名稱與金額喔！');
             return;
         }
 
-        expenses.push({ id: Date.now(), desc, amount, cat });
+        // 建立這筆新帳目的資料包
+        const newExpense = { id: Date.now(), desc, amount, cat, currency };
+
+        // 1. 先存在手機本地 (LocalStorage)
+        expenses.push(newExpense);
         localStorage.setItem('hkTripExpenses', JSON.stringify(expenses)); 
         
         document.getElementById('exp-desc').value = '';
         document.getElementById('exp-amount').value = '';
         
         renderExpenseList();
+
+        // 2. 雲端同步：背景發送資料給 Google Sheets (不會卡住畫面)
+        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzzfCU-es9nOCyuHKrnr5u12BoPmjACsbLNLJCDkhQuy-CS8zXuLXaONnoZeXX_5HeqZA/exec';
+        
+        fetch(GOOGLE_SHEET_URL, {
+            method: 'POST',
+            // 這裡用 text/plain 是為了繞過瀏覽器的 CORS 安全檢查，但 Google 依然能完美解析
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(newExpense)
+        }).then(response => {
+            console.log('✅ 成功同步至 Google Sheets');
+        }).catch(err => {
+            console.error('❌ 同步失敗', err);
+        });
     }
 
     function deleteExpense(id) {
@@ -1240,12 +1265,23 @@
         if (!listEl || !totalEl) return;
 
         let html = '';
-        let total = 0;
+        let totalHKD = 0;
+        let totalTWD = 0;
 
         const catIcons = { 'food': '🍔', 'trans': '🚇', 'shop': '🛍️', 'ticket': '🎟️', 'other': '🌟' };
 
         expenses.forEach(exp => {
-            total += exp.amount;
+            // 兼容舊資料：如果沒有幣別設定，預設為 HKD
+            const curr = exp.currency || 'HKD';
+            const currSymbol = curr === 'HKD' ? 'HK$' : 'NT$';
+            const currColor = curr === 'HKD' ? 'var(--primary)' : '#e85d04';
+
+            if (curr === 'HKD') {
+                totalHKD += exp.amount;
+            } else {
+                totalTWD += exp.amount;
+            }
+
             html += `
                 <div class="expense-item">
                     <div style="display:flex; align-items:center; gap:12px;">
@@ -1253,7 +1289,7 @@
                         <span style="font-weight:bold; color:#4a5568; font-size:16px;">${exp.desc}</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:12px;">
-                        <span style="font-weight:900; color:var(--primary); font-size:16px;">$${exp.amount}</span>
+                        <span style="font-weight:900; color:${currColor}; font-size:16px;">${currSymbol}${exp.amount.toLocaleString()}</span>
                         <button class="del-btn" onclick="deleteExpense(${exp.id})">✖</button>
                     </div>
                 </div>
@@ -1264,8 +1300,12 @@
             html = `<div style="text-align:center; color:#a0aec0; padding:15px; font-weight:bold; font-size:15px; border:2px dashed #eee; border-radius:15px;">目前還沒有明細喔！ ✨</div>`;
         }
 
+        // 計算包含台幣的總和
+        const exchangeRate = 4.1;
+        const grandTotalTWD = Math.round(totalHKD * exchangeRate) + totalTWD;
+
         listEl.innerHTML = html;
-        totalEl.innerHTML = `總支出：HK$ ${total.toLocaleString()} <br><span style="font-size:14px; color:#888;">(約 NT$ ${Math.round(total * 4.1).toLocaleString()})</span>`;
+        totalEl.innerHTML = `總支出：約 NT$ ${grandTotalTWD.toLocaleString()} <br><span style="font-size:14px; color:#888;">(含 HK$ ${totalHKD.toLocaleString()} 及 NT$ ${totalTWD.toLocaleString()})</span>`;
         if (countEl) countEl.innerText = `📜 查看歷史明細 (共 ${expenses.length} 筆) ${document.getElementById('expense-history-container').classList.contains('show') ? '▴' : '▾'}`;
     }
 
@@ -1550,9 +1590,10 @@
         
         if (tabName === 'home') {
             html = `
-                <!-- 首頁專屬：四大功能切換按鈕 -->
+                <!-- 首頁專屬：五大功能切換按鈕 -->
                 <div class="home-tabs-container" style="margin-top: 5px;">
                     <button id="btn-home-weather" class="home-sub-btn active" onclick="switchHomeSection('weather')">🌤️ 氣象</button>
+                    <button id="btn-home-ticket" class="home-sub-btn" onclick="switchHomeSection('ticket')">🎟️ 票券</button>
                     <button id="btn-home-todo" class="home-sub-btn" onclick="switchHomeSection('todo')">📝 待辦</button>
                     <button id="btn-home-buy" class="home-sub-btn" onclick="switchHomeSection('buy')">🛒 必買</button>
                     <button id="btn-home-food" class="home-sub-btn" onclick="switchHomeSection('food')">🤤 必吃</button>
@@ -1571,6 +1612,56 @@
                         <h3 style="margin-top:0; color:#4a5568;">📅 未來一週天氣預測</h3>
                         <div id="forecast-container">
                             <p style="text-align:center; color:#888;">⏳ 預報資料讀取中...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 區塊 1.5：我的票券夾 -->
+                <div id="sec-ticket" class="home-section" style="display: none;">
+                    <div class="section-card" style="background:#f3e8ff; border-color:#d8b4fe; box-shadow: 0 6px 0 #d8b4fe;">
+                        <h3 style="margin-top:0; color:#7e22ce;">🎟️ 我的票券夾</h3>
+                        <p style="font-size:13px; font-weight:bold; color:#666; margin-bottom:15px;">集中管理所有預訂憑證，點擊即可快速開啟！</p>
+                        
+                        <div style="display:flex; flex-direction:column; gap:10px;">
+                            <!-- 住宿憑證 -->
+                            <div style="background:white; border-radius:15px; padding:12px; border:2px dashed #d8b4fe; display:flex; align-items:center; gap:10px; cursor:pointer; box-shadow: 0 3px 0 #eee;" onclick="openVoucherModal('城景國際Cityview 住宿憑證', 'cityview_voucher.jpg', '🧾 訂房憑證')">
+                                <div style="font-size:30px;">🏨</div>
+                                <div style="flex:1;">
+                                    <div style="font-weight:900; color:#7e22ce; font-size:15px;">城景國際Cityview 住宿憑證</div>
+                                    <div style="font-size:12px; color:#888; font-weight:bold; margin-top:2px;">入住日：7/12 (日)</div>
+                                </div>
+                                <div style="background:#f3e8ff; color:#7e22ce; padding:5px 10px; border-radius:10px; font-size:12px; font-weight:900;">開啟 👆</div>
+                            </div>
+
+                            <!-- 票券 1 -->
+                            <div style="background:white; border-radius:15px; padding:12px; border:2px dashed #d8b4fe; display:flex; align-items:center; gap:10px; cursor:pointer; box-shadow: 0 3px 0 #eee;" onclick="openVoucherModal('香港海洋公園 門票', 'oceanpark_ticket.jpg', '🎟️ 電子門票')">
+                                <div style="font-size:30px;">🐬</div>
+                                <div style="flex:1;">
+                                    <div style="font-weight:900; color:#7e22ce; font-size:15px;">香港海洋公園 門票</div>
+                                    <div style="font-size:12px; color:#888; font-weight:bold; margin-top:2px;">使用日：7/13 (一)</div>
+                                </div>
+                                <div style="background:#f3e8ff; color:#7e22ce; padding:5px 10px; border-radius:10px; font-size:12px; font-weight:900;">開啟 👆</div>
+                            </div>
+
+                            <!-- 票券 2 -->
+                            <div style="background:white; border-radius:15px; padding:12px; border:2px dashed #d8b4fe; display:flex; align-items:center; gap:10px; cursor:pointer; box-shadow: 0 3px 0 #eee;" onclick="openVoucherModal('香港迪士尼樂園 門票', 'disney_ticket.jpg', '🎟️ 電子門票')">
+                                <div style="font-size:30px;">🏰</div>
+                                <div style="flex:1;">
+                                    <div style="font-weight:900; color:#7e22ce; font-size:15px;">香港迪士尼樂園 門票</div>
+                                    <div style="font-size:12px; color:#888; font-weight:bold; margin-top:2px;">使用日：7/15 (三)</div>
+                                </div>
+                                <div style="background:#f3e8ff; color:#7e22ce; padding:5px 10px; border-radius:10px; font-size:12px; font-weight:900;">開啟 👆</div>
+                            </div>
+
+                            <!-- 票券 3 -->
+                            <div style="background:white; border-radius:15px; padding:12px; border:2px dashed #d8b4fe; display:flex; align-items:center; gap:10px; cursor:pointer; box-shadow: 0 3px 0 #eee;" onclick="openVoucherModal('昂坪 360 纜車 門票', 'ngongping_ticket.jpg', '🎟️ 電子門票')">
+                                <div style="font-size:30px;">🚠</div>
+                                <div style="flex:1;">
+                                    <div style="font-weight:900; color:#7e22ce; font-size:15px;">昂坪 360 纜車 門票</div>
+                                    <div style="font-size:12px; color:#888; font-weight:bold; margin-top:2px;">使用日：7/17 (五)</div>
+                                </div>
+                                <div style="background:#f3e8ff; color:#7e22ce; padding:5px 10px; border-radius:10px; font-size:12px; font-weight:900;">開啟 👆</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1841,7 +1932,7 @@
                     
                     <!-- 總支出面板移到上方，一目了然 -->
                     <div id="expense-total" class="expense-total" style="margin-top: 0; margin-bottom: 20px; border-top: 0; padding-top: 0; text-align: center;">
-                        總支出：HK$ 0 <br><span style="font-size:14px; color:#888;">(約 NT$ 0)</span>
+                        總支出：約 NT$ 0 <br><span style="font-size:14px; color:#888;">(含 HK$ 0 及 NT$ 0)</span>
                     </div>
 
                     <div class="expense-form">
@@ -1853,7 +1944,11 @@
                                 <option value="ticket">🎟️ 門票</option>
                                 <option value="other">🌟 其他</option>
                             </select>
-                            <input type="number" id="exp-amount" placeholder="金額(HKD)" style="flex: 1.2;">
+                            <select id="exp-currency" style="width: 80px; flex: none; text-align: center; padding-left: 5px; padding-right: 5px;">
+                                <option value="HKD">HK$</option>
+                                <option value="TWD">NT$</option>
+                            </select>
+                            <input type="number" id="exp-amount" placeholder="金額" style="flex: 1.2;">
                         </div>
                         <input type="text" id="exp-desc" placeholder="輸入花費項目名稱...">
                         <button class="action-btn" style="justify-content:center; background:var(--accent); border-color:#e85d04; color:white; box-shadow: 0 5px 0 #e85d04; margin-top:5px;" onclick="addExpense()">
@@ -2057,8 +2152,10 @@
                     color: "#e85d04", bg: "#fff4e6", border: "#ffa94d",
                     items: [
                         "輕便型兒童推車 <span class='tag-check'>🧳 託運 / 機邊託運</span>", 
+                        "推車電風扇 <span class='tag-carry'>👜 絕對隨身 (禁託運)</span>",
                         "兒童薄外套 (擋冷氣)", 
                         "備用衣物 (多帶幾套)", 
+                        "備用尿布",
                         "安撫玩具 / 零食", 
                         "兒童水壺 <span class='tag-warn'>💧 安檢前須倒空</span>", 
                         "濕紙巾 / 面紙 (多帶)"
@@ -2068,10 +2165,16 @@
                     title: "🔌 電子產品",
                     color: "#7e22ce", bg: "#f3e8ff", border: "#d8b4fe",
                     items: [
-                        "手機及充電線", 
+                        "手機、平板及充電線", 
                         "行動電源 <span class='tag-carry'>👜 絕對隨身 (禁託運)</span>", 
-                        "萬用轉接頭 (英規三腳)", 
-                        "上網 SIM 卡 / eSIM"
+                        "萬用轉接頭 (英規三腳) / 變壓器 <span class='tag-warn'>⚡ 注意香港電壓220V</span>", 
+                        "上網 SIM 卡 / eSIM",
+                        "電子秤",
+                        "insta360 X5 / 電池 / 充電器 <span class='tag-carry'>👜 電池隨身</span>",
+                        "insta360 ace pro / 電池 <span class='tag-carry'>👜 電池隨身</span>",
+                        "poke 磁吸支架",
+                        "腳架 <span class='tag-check'>🧳 超過60cm須託運</span>",
+                        "兒童藍芽耳機"
                     ]
                 },
                 {
@@ -2086,14 +2189,29 @@
                     ]
                 },
                 {
-                    title: "👗 衣物與其他",
+                    title: "👗 衣物",
                     color: "#d87093", bg: "#fff0f5", border: "#ffb6c1",
                     items: [
-                        "好走的運動鞋", 
+                        "換洗衣物 (外衣/內衣褲/襪子)",
+                        "睡衣 / 輕便家居服",
+                        "薄外套 (香港室內冷氣極強)",
+                        "拖鞋"
+                    ]
+                },
+                {
+                    title: "🧴 日用品",
+                    color: "#0f766e", bg: "#f0fdfa", border: "#5eead4",
+                    items: [
+                        "盥洗用品 <span class='tag-check'>🧳 >100ml 須託運</span>",
+                        "牙套 / 牙套盒 / 漱口水 <span class='tag-check'>🧳 >100ml 須託運</span>",
                         "輕便雨具 / 摺疊傘 <span class='tag-check'>🧳 長傘須託運</span>", 
                         "隨身小電風扇 <span class='tag-carry'>👜 絕對隨身 (禁託運)</span>", 
                         "指甲剪 / 食物剪刀 <span class='tag-check'>🧳 絕對託運</span>",
-                        "購物袋 (香港買袋子要錢)"
+                        "衣物壓縮袋",
+                        "購物袋 (香港買袋子要錢)",
+                        "3coins超大行李袋 (裝備用行李)",
+                        "簡易型衣架",
+                        "吹風機 <span class='tag-warn'>⚡ 注意香港電壓220V</span>"
                     ]
                 }
             ];
@@ -2326,7 +2444,7 @@
                     // 檢查是否有訂房憑證的圖檔設定
                     let voucherBtn = '';
                     if (step.voucherImg) {
-                        voucherBtn = `<button class="mini-btn" style="background:#fff4e6; border-color:#ffa94d; color:#d97706; box-shadow: 0 3px 0 #ffa94d;" onclick="openVoucherModal('${step.name}', '${step.voucherImg}')">
+                        voucherBtn = `<button class="mini-btn" style="background:#fff4e6; border-color:#ffa94d; color:#d97706; box-shadow: 0 3px 0 #ffa94d;" onclick="openVoucherModal('${step.name}', '${step.voucherImg}', '🧾 訂房憑證')">
                             🧾 訂房憑證 <span style="font-size:13px;">✨</span>
                         </button>`;
                     }
@@ -2367,16 +2485,20 @@
         openDetailModal(step.name, step.type, extraInfo, step.mapUrl, step.hotelImg, step.customStyle);
     }
 
-    // 開啟憑證圖檔的專屬彈窗
-    function openVoucherModal(name, imgSrc) {
-        let content = `<h3 style="color:var(--accent); margin-top:0; text-align:center; font-size:24px; text-shadow: 2px 2px 0px #ffe066; letter-spacing:1px;">🧾 訂房憑證</h3>`;
+    // 開啟憑證圖檔的專屬彈窗 (已升級為通用版)
+    function openVoucherModal(name, imgSrc, modalTitle = '🧾 預訂憑證') {
+        let content = `<h3 style="color:var(--accent); margin-top:0; text-align:center; font-size:24px; text-shadow: 2px 2px 0px #ffe066; letter-spacing:1px;">${modalTitle}</h3>`;
         content += `<p style="text-align:center; font-weight:bold; color:#555; margin-bottom: 15px;">${name}</p>`;
         content += `<div style="text-align:center;">
             <div style="background:#f4fbff; padding: 10px; border-radius: 15px; border: 3px dashed var(--accent);">
-                <img src="${imgSrc}" alt="訂房憑證圖片" style="max-width:100%; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.onerror=null; this.parentNode.innerHTML='<div style=\\'padding:30px; color:#d97706; font-weight:bold\\'>⏳ 尚未上傳<br><span style=\\'font-size:12px; color:#888;\\'>請確認檔名：${imgSrc}</span></div>';">
+                <img src="${imgSrc}" alt="憑證圖片" style="max-width:100%; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.onerror=null; this.parentNode.innerHTML='<div style=\\'padding:30px; color:#d97706; font-weight:bold\\'>⏳ 尚未上傳<br><span style=\\'font-size:12px; color:#888;\\'>請確認檔名：${imgSrc}</span></div>';">
             </div>
-            <p style="font-size:12px; color:#888; margin-top:10px; font-weight:bold;">出示此憑證與護照辦理入住手續</p>
+            <p style="font-size:12px; color:#888; margin-top:10px; font-weight:bold;">出示此憑證辦理相關手續</p>
         </div>`;
+        
+        content += `<button class="action-btn" style="margin-top: 15px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+            <span style="font-size: 16px; font-weight: 900;">✖ 關閉憑證</span>
+        </button>`;
         
         document.getElementById('modal-body').innerHTML = content;
         
@@ -2416,6 +2538,18 @@
              content = `
                 <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid var(--purple); text-align: center;">
                     <h3 style="color: #333; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">${name}</h3>
+                </div>
+                <img src="${extraInfo}" style="width:100%; border-radius:15px; border:2px dashed #ccc;" onerror="this.onerror=null; this.parentNode.innerHTML+='<br><span style=\\'color:#888; font-size:12px;\\'>⚠️ 圖片未上傳: '+this.src+'</span>'; this.style.display='none';">
+                <button class="action-btn" style="margin-top: 15px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+                    <span style="font-size: 16px; font-weight: 900;">✖ 關閉資訊</span>
+                </button>
+            `;
+        } else if (customStyle === 'hingkee') {
+            // 專屬：興記煲仔飯的精緻餐點攻略
+            content = `
+                <div style="position: relative; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid #ffa94d; text-align: center;">
+                    <h3 style="color: #333; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">🔥 興記煲仔飯 全攻略</h3>
+                    <span style="position: absolute; right: 0px; top: -15px; font-size: 35px; opacity: 0.2;">🍳</span>
                 </div>
 
                 <!-- 1. 正宗吃法區塊 -->
@@ -2630,6 +2764,10 @@
                         <div>漫步「昂坪市集」<br>➔ 挑戰 268 階參拜「天壇大佛」</div>
                     </div>
                 </div>
+
+                <button class="action-btn" style="margin-top: 15px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+                    <span style="font-size: 16px; font-weight: 900;">✖ 關閉攻略</span>
+                </button>
             `;
         } else if (customStyle === 'citygate') {
             // 專屬：東薈城名店倉的韓國排版風格
@@ -2692,6 +2830,10 @@
                         <div>東涌消防局旁搭乘 <strong>S1 巴士</strong><br>➔ 約 25 分鐘直達香港國際機場</div>
                     </div>
                 </div>
+
+                <button class="action-btn" style="margin-top: 15px; justify-content:center; background:#f1f5f9; border-color:#cbd5e1; color:#475569; box-shadow: 0 5px 0 #cbd5e1;" onclick="closeModal()">
+                    <span style="font-size: 16px; font-weight: 900;">✖ 關閉攻略</span>
+                </button>
             `;
         } else if (customStyle === 'oceanpark') {
             // 專屬：香港海洋公園的超詳細攻略排版
